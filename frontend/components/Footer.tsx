@@ -1,8 +1,10 @@
+import Link from "next/link";
 import React from "react";
 export default function Footer() {
     return (
       <footer>
         <div className="container">
+          <Link href="/admin">Admin</Link>
           <div className="col-lg-8">
             <p>Copyright © 2048 Villa Agency Co., Ltd. All rights reserved. 
             <br />
