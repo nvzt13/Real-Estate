@@ -1917,3 +1917,23 @@ body {
     margin-right: 100px;
   }
 }
+.accordion-button {
+  background-color: transparent !important;
+  color: #fff !important;
+  font-weight: 500;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.accordion-button:not(.collapsed) {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: #fff !important;
+}
+
+.accordion-button:focus {
+  box-shadow: none !important;
+}
+
+.accordion-button::after {
+  filter: brightness(0) invert(1); /* ok işaretini beyaz yapar */
+}

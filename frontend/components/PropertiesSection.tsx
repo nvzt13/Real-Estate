@@ -90,18 +90,18 @@ export default function PropertiesSection() {
     }
   ]
 
-  React.useEffect(() => {
-    try{
-      const response = fetch("http://127.0.0.1:8000/api/listings/1/")
-      response.then(res => res.json()).then(data => {
-        console.log(data);
-      });
+  // React.useEffect(() => {
+  //   try{
+  //     const response = fetch("http://127.0.0.1:8000/api/listings/1/")
+  //     response.then(res => res.json()).then(data => {
+  //       console.log(data);
+  //     });
 
-    }catch (error) {
-      console.error("Error fetching property data:", error);
-    }
-  }
-  , []);
+  //   }catch (error) {
+  //     console.error("Error fetching property data:", error);
+  //   }
+  // }
+  // , []);
 
   return (
     <div className="properties section">

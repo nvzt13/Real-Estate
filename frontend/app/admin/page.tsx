@@ -37,8 +37,6 @@ export default function Home() {
             <Cards />
             <Charts />
             <div className="row">
-              <Projects />
-              <ColorSystem />
             </div>
           </div>
         <Footer />

@@ -7,6 +7,7 @@ import PropertiesSection from '@/components/PropertiesSection'
 import ContactSection from '@/components/ContactSection'
 import React from 'react'
 import Header from '@/components/Header'
+import Footer from '@/components/Footer'
 
 export default function Home() {
   return (
@@ -19,6 +20,7 @@ export default function Home() {
       <BestDealSection />
       <PropertiesSection />
       <ContactSection />
+      <Footer />
     </div>
   )
 }

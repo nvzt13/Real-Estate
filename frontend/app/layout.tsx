@@ -1,5 +1,3 @@
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
 import "./globals.css";
 import Script from "next/script";
 import '@/admin.css';
@@ -23,8 +21,6 @@ export default function RootLayout({
       <head></head>
       <body>
         {children}
-        <Footer />
-
         {/* Bootstrap JS - sadece client-side */}
         <Script
           src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"
