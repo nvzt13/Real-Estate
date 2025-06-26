@@ -1,9 +1,5 @@
-import "./globals.css";
 import Script from "next/script";
-import '@/admin.css';
-
 import 'bootstrap/dist/css/bootstrap.min.css';
-
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 export const metadata = {
