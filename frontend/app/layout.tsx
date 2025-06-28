@@ -1,6 +1,7 @@
 import Script from "next/script";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import Header from "@/components/layout/Header";
 
 export const metadata = {
   title: "Villa Agency",
@@ -16,6 +17,7 @@ export default function RootLayout({
     <html lang="en">
       <head></head>
       <body>
+      <Header />
         {children}
         {/* Bootstrap JS - sadece client-side */}
         <Script
