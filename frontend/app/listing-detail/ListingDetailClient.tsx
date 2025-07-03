@@ -28,7 +28,7 @@ const listing = {
 
 function ListingDetailPage() {
   return (
-    <Container className="mt-5">
+    <Container className="p-5">
       <div className="mb-4 d-flex align-items-center" style={{ cursor: 'pointer' }}>
         <Link href="/">
           <i className="fas fa-arrow-left me-2" style={{ fontSize: '20px', color: '#5e1ee8' }}></i>
@@ -84,7 +84,7 @@ function ListingDetailPage() {
           <h5>Açıklama</h5>
           <p style={{ lineHeight: 1.6 }}>{listing.description}</p>
 
-          <Button variant="primary" style={{ backgroundColor: '#5e1ee8', border: 'none', width: '100%' }}>
+          <Button style={{ backgroundColor: '#4318D1', border: 'none', width: '100%' }}>
             Satıcıyla İletişime Geç
           </Button>
         </Col>

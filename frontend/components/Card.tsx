@@ -44,7 +44,7 @@ function GenericCard({ data }) {
           </div>
           <Badge bg={getBackgroundColor(data.type)}>{data.type}</Badge>
         </div>
-        <Button variant="primary" className="mt-3" style={{ width: '100%' }} href='/listing-detail'>
+        <Button className="mt-3" style={{ width: '100%', backgroundColor: "#4318D1"}} href='/listing-detail'>
           Detayları Gör
         </Button>
       </Card.Body>
