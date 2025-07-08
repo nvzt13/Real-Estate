@@ -1,7 +1,7 @@
 "use client";
 import Link from 'next/link';
 import React from 'react';
-import { Container, Row, Col, Button, Badge, ListGroup } from 'react-bootstrap';
+import { Container, Row, Col, Button, Badge } from 'react-bootstrap';
 
 const listing = {
   title: 'Modern Villa in Beşiktaş',
@@ -28,23 +28,24 @@ const listing = {
 
 function ListingDetailPage() {
   return (
-    <Container className="p-5">
-      <div className="mb-4 d-flex align-items-center" style={{ cursor: 'pointer' }}>
-        <Link href="/">
+    <Container className="py-4">
+      <div className="mb-3">
+        <Link href="/" className="text-decoration-none d-flex align-items-center">
           <i className="fas fa-arrow-left me-2" style={{ fontSize: '20px', color: '#5e1ee8' }}></i>
-          <span>Geri Dön</span>
+          <span className="text-dark">Geri Dön</span>
         </Link>
       </div>
-      <Row style={{width:"1271px"}}>
+
+      <Row className="g-4">
         {/* Sol: Görseller */}
-        <Col md={6}>
+        <Col lg={6}>
           <img
             src={listing.imageMain}
             alt="Main"
-            className="img-fluid mb-3"
-            style={{ borderRadius: '10px' }}
+            className="img-fluid mb-3 rounded"
           />
-          <div style={{ display: 'flex', gap: '10px' }}>
+
+          <div className="d-flex flex-wrap gap-2">
             {listing.images.map((img, i) => (
               <img
                 key={i}
@@ -54,8 +55,8 @@ function ListingDetailPage() {
                   width: '100px',
                   height: '70px',
                   borderRadius: '5px',
-                  cursor: 'pointer',
                   objectFit: 'cover',
+                  cursor: 'pointer',
                 }}
               />
             ))}
@@ -63,28 +64,35 @@ function ListingDetailPage() {
         </Col>
 
         {/* Sağ: Bilgi ve Açıklama */}
-        <Col md={6}>
+        <Col lg={6}>
           {listing.label && <Badge bg="warning" className="mb-2">{listing.label}</Badge>}
-
           <h4>{listing.title}</h4>
-          <div style={{ color: 'gray' }}>{listing.location}</div>
-          <h3 style={{ color: '#5e1ee8', marginTop: '10px' }}>₺{listing.price.toLocaleString('tr-TR')}</h3>
+          <div className="text-muted">{listing.location}</div>
+          <h3 className="mt-2" style={{ color: '#5e1ee8' }}>
+            ₺{listing.price.toLocaleString('tr-TR')}
+          </h3>
 
-          {/* Özellikler */}
-          <h5 className='fw-bold mt-4'>Özellikler</h5>
-          <Row className="mb-3">
-            <Col md={6}><p><strong>Oda Sayısı:</strong> {listing.specs.rooms}</p></Col>
-            <Col md={6}><p><strong>Alan:</strong> {listing.specs.area}</p></Col>
-            <Col md={6}><p><strong>Kat:</strong> {listing.specs.floor}</p></Col>
-            <Col md={6}><p><strong>Yaş:</strong> {listing.specs.age}</p></Col>
-            <Col md={6}><p><strong>Isıtma:</strong> {listing.specs.heating}</p></Col>
-            <Col md={6}><p><strong>Otopark:</strong> {listing.specs.parking}</p></Col>
+          <h5 className="fw-bold mt-4">Özellikler</h5>
+          <Row>
+            <Col xs={6}><p><strong>Oda Sayısı:</strong> {listing.specs.rooms}</p></Col>
+            <Col xs={6}><p><strong>Alan:</strong> {listing.specs.area}</p></Col>
+            <Col xs={6}><p><strong>Kat:</strong> {listing.specs.floor}</p></Col>
+            <Col xs={6}><p><strong>Yaş:</strong> {listing.specs.age}</p></Col>
+            <Col xs={6}><p><strong>Isıtma:</strong> {listing.specs.heating}</p></Col>
+            <Col xs={6}><p><strong>Otopark:</strong> {listing.specs.parking}</p></Col>
           </Row>
-          {/* Açıklama */}
-          <h5>Açıklama</h5>
+
+          <h5 className="mt-3">Açıklama</h5>
           <p style={{ lineHeight: 1.6 }}>{listing.description}</p>
 
-          <Button style={{ backgroundColor: '#4318D1', border: 'none', width: '100%' }}>
+          <Button
+            style={{
+              backgroundColor: '#4318D1',
+              border: 'none',
+              width: '100%',
+              marginTop: '20px',
+            }}
+          >
             Satıcıyla İletişime Geç
           </Button>
         </Col>
