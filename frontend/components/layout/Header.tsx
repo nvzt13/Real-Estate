@@ -3,7 +3,6 @@ import React from "react";
 import Link from "next/link";
 import { Container, Navbar, Nav, Button, Offcanvas } from "react-bootstrap";
 import Image from "next/image";
-import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
 function Header() {
   const login = true;

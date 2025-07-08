@@ -1,5 +1,5 @@
 import React from 'react'
-import RealEstateList from './mapClient'
+import RealEstateList from './MapClient'
 
 const page = () => {
   return (
