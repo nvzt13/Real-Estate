@@ -11,7 +11,7 @@ export default function AdminPanel() {
       <Row className="mb-4 align-items-center">
         <Col><h3 className="fw-bold">Admin Kontrol Paneli</h3></Col>
         <Col className="text-end">
-          <Button variant="primary">Yeni İlan Ekle</Button>
+          <Button href="/create-listing" variant="primary">Yeni Ilan Ekle</Button>
         </Col>
       </Row>
 
