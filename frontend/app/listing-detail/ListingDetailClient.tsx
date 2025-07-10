@@ -1,6 +1,6 @@
 "use client";
 import Link from 'next/link';
-import React from 'react';
+import React, { useState } from 'react';
 import { Container, Row, Col, Button, Badge } from 'react-bootstrap';
 
 const listing = {
@@ -25,52 +25,10 @@ const listing = {
   description:
     'Lüks villa, deniz manzaralı, 4+1, 250m², modern tasarım, güvenlikli site içinde, özel bahçe ve havuz.',
 };
-const vehicleListing = {
-  title: '2021 BMW 320i Sport Line',
-  location: 'Kadıköy, İstanbul',
-  price: 1450000,
-  label: 'Yeni İlan',
-  imageMain: 'https://images.unsplash.com/photo-1607532941433-304659e81991?w=500&auto=format&fit=crop&q=60',
-  images: [
-    'https://images.unsplash.com/photo-1607532941433-304659e81991?w=500&auto=format&fit=crop&q=60',
-    'https://images.unsplash.com/photo-1629904853716-f0bc54eea447?w=500&auto=format&fit=crop&q=60',
-    'https://images.unsplash.com/photo-1618495072024-904cded59f1b?w=500&auto=format&fit=crop&q=60',
-  ],
-  specs: {
-    brand: 'BMW',
-    model: '320i Sport Line',
-    year: '2021',
-    fuel: 'Benzin',
-    transmission: 'Otomatik',
-    mileage: '45.000 km',
-  },
-  description:
-    '2021 model BMW 320i Sport Line, düşük kilometreli, otomatik vites, full paket, bakımları yetkili serviste yapılmış, değişensiz.',
-};
-const landListing = {
-  title: 'Deniz Manzaralı Yatırımlık Arsa',
-  location: 'Urla, İzmir',
-  price: 1850000,
-  label: 'Fırsat',
-  imageMain: 'https://images.unsplash.com/photo-1550966871-3ed3cdb5ed3f?w=500&auto=format&fit=crop&q=60',
-  images: [
-    'https://images.unsplash.com/photo-1550966871-3ed3cdb5ed3f?w=500&auto=format&fit=crop&q=60',
-    'https://images.unsplash.com/photo-1570129757665-cb51f26c5cb7?w=500&auto=format&fit=crop&q=60',
-    'https://images.unsplash.com/photo-1612874745737-b2e82a9f4f87?w=500&auto=format&fit=crop&q=60',
-  ],
-  specs: {
-    area: '700m²',
-    zoning: 'Konut İmarlı',
-    deed: 'Müstakil Parsel',
-    frontage: '30m',
-    infrastructure: 'Elektrik, Su, Yol Var',
-    status: 'Boş',
-  },
-  description:
-    'Urla\'da deniz manzaralı, 700m², konut imarlı, yatırımlık arsa. Elektrik, su ve yol altyapısı hazır. Sessiz, doğa ile iç içe konum.',
-};
 
 function ListingDetailPage() {
+  const [mainImage, setMainImage] = useState(listing.imageMain);
+
   return (
     <Container className="py-4">
       <div className="mb-3">
@@ -84,10 +42,16 @@ function ListingDetailPage() {
         {/* Sol: Görseller */}
         <Col lg={6}>
           <img
-            src={listing.imageMain}
-            alt="Main"
-            className="img-fluid mb-3 rounded"
-          />
+  src={mainImage}
+  alt="Main"
+  className="img-fluid mb-3 rounded"
+  style={{
+    width: '100%',
+    height: '400px', // Sabit yükseklik
+    objectFit: 'cover', // Resmi kırpar ama orantılı gösterir
+    borderRadius: '8px',
+  }}
+/>
 
           <div className="d-flex flex-wrap gap-2">
             {listing.images.map((img, i) => (
@@ -95,12 +59,14 @@ function ListingDetailPage() {
                 key={i}
                 src={img}
                 alt={`Villa ${i + 1}`}
+                onClick={() => setMainImage(img)}
                 style={{
                   width: '100px',
                   height: '70px',
                   borderRadius: '5px',
                   objectFit: 'cover',
                   cursor: 'pointer',
+                  border: img === mainImage ? '2px solid #5e1ee8' : '1px solid #ccc',
                 }}
               />
             ))}
