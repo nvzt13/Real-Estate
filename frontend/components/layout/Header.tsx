@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import Link from "next/link";
-import { Container, Navbar, Nav, Button, Offcanvas } from "react-bootstrap";
+import { Container, Navbar, Nav, Button, Offcanvas, Dropdown, Image as RBImage } from "react-bootstrap";
 import Image from "next/image";
 
 function Header() {
@@ -29,10 +29,10 @@ function Header() {
               <Link href="/" className="nav-link" style={{ lineHeight: "25px" }}>
                 Ana Sayfa
               </Link>
-              <Link href="/harita" className="nav-link">
+              <Link href="/map" className="nav-link">
                 Harita
               </Link>
-              <Link href="/favoriler" className="nav-link">
+              <Link href="/fawories" className="nav-link">
                 Favoriler
               </Link>
               <Link href="/admin" className="nav-link">
@@ -41,13 +41,8 @@ function Header() {
             </Nav>
 
             {login ? (
-              <div className="dropdown">
-                <button
-                  className="btn dropdown-toggle border-0 p-0 bg-transparent"
-                  type="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >
+              <Dropdown align="end">
+                <Dropdown.Toggle variant="light" className="p-0 border-0 bg-transparent">
                   <Image
                     src="/banner-01.jpg"
                     width={50}
@@ -55,33 +50,29 @@ function Header() {
                     className="rounded-circle"
                     alt="User Avatar"
                   />
-                </button>
-                <ul className="dropdown-menu dropdown-menu-end p-3">
-                  <li>
-                    <Link href="/mesajlar" className="dropdown-item">
-                      Mesajlar
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/favoriler" className="dropdown-item">
-                      Favoriler
-                    </Link>
-                  </li>
-                  <li>
-                    <Button variant="danger" className="me-2 w-100">
-                      Çıkış Yap
-                    </Button>
-                  </li>
-                </ul>
-              </div>
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu className="p-3">
+                  <Dropdown.Item as={Link} href="/message">
+                    Mesajlar
+                  </Dropdown.Item>
+                  <Dropdown.Item as={Link} href="/fawories">
+                    Favoriler
+                  </Dropdown.Item>
+                  <Dropdown.Divider />
+                  <Button variant="danger" className="w-100 mt-2">
+                    Çıkış Yap
+                  </Button>
+                </Dropdown.Menu>
+              </Dropdown>
             ) : (
               <Nav className="d-flex gap-2 mt-3">
-                <Link href="/giris" passHref>
+                <Link href="/login" passHref>
                   <Button variant="outline-primary" className="me-2">
                     Giriş Yap
                   </Button>
                 </Link>
-                <Link href="/kayit" passHref>
+                <Link href="/register" passHref>
                   <Button style={{ backgroundColor: "#4318D1" }}>
                     Kayıt Ol
                   </Button>
