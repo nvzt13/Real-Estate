@@ -16,7 +16,7 @@ export const fetchListings = createAsyncThunk("listings/fetchAll", async () => {
   const res = await fetch("http://localhost:8000/api/listings/");
   if (!res.ok) throw new Error("İlanlar getirilemedi");
   const data = await res.json();
-  return data.data; // Eğer Django şu şekilde dönüyorsa: { "data": [...] }
+  return data; // Eğer Django şu şekilde dönüyorsa: { "data": [...] }
 });
 
 // Yeni ilan ekle

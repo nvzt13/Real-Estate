@@ -154,6 +154,9 @@ export const listings = [
 ];
 
 
+
+
+
 function ListingDetailPage({ id }: { id: string }) {
   const selectedListing = listings.find(item => item.id === parseInt(id));
   const [mainImage, setMainImage] = useState<string | undefined>(selectedListing?.imageMain);
