@@ -1,4 +1,5 @@
 import GenericCard from "@/components/Card";
+import Test from "@/components/Test";
 import { Container, Row, Col } from "react-bootstrap";
 
 const items = [
@@ -70,6 +71,7 @@ export default function Home() {
           ))}
         </Row>
       </Container>
+      <Test />
     </div>
   );
 }

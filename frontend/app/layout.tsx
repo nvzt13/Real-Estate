@@ -2,6 +2,8 @@ import Script from "next/script";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import Header from "@/components/layout/Header";
+import 'leaflet/dist/leaflet.css';
+import StoreProvider from "./StoreProvider";
 
 export const metadata = {
   title: "Villa Agency",
@@ -17,8 +19,10 @@ export default function RootLayout({
     <html lang="en">
       <head></head>
       <body>
+        <StoreProvider>
       <Header />
         {children}
+        </StoreProvider>
         {/* Bootstrap JS - sadece client-side */}
         <Script
           src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"

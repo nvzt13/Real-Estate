@@ -1,10 +1,10 @@
 import React from 'react'
-import RealEstateList from './MapClient'
+import MapWrapper from './MapWrapper';
 
 const page = () => {
   return (
-    <div>
-        <RealEstateList />
+    <div style={{ height: '500px', width: '100%' }}>
+        <MapWrapper />
     </div>
   )
 }
