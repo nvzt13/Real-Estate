@@ -1,4 +1,5 @@
 "use client";
+import { Listing } from "@/types/types";
 import React, { useState } from "react";
 import {
   Form,
@@ -10,36 +11,93 @@ import {
   ToastContainer,
 } from "react-bootstrap";
 
+
 const YeniIlanEkle = () => {
   const [kategori, setKategori] = useState("Ev");
   const [toastMessage, setToastMessage] = useState("");
   const [toastType, setToastType] = useState("success");
   const [showToast, setShowToast] = useState(false);
 
+  const [formData, setFormData] = useState<Listing>({
+    id: "",
+    type: "ev",
+    title: "",
+    location: "",
+    coordinates: [0, 0],
+    price: 0,
+    label: "Yeni",
+    imageMain: "",
+    images: [],
+    specs: {} as any,
+    description: "",
+  });
+
   const handleKategoriChange = (e) => {
     setKategori(e.target.value);
   };
 
-  const showToastMessage = (message, type = "success") => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const collectSpecs = () => {
+    if (kategori === "Ev") {
+      return {
+        rooms: (document.querySelector('[name="rooms"]') as HTMLInputElement)?.value,
+        area: (document.querySelector('[name="area"]') as HTMLInputElement)?.value,
+        floor: (document.querySelector('[name="floor"]') as HTMLInputElement)?.value,
+        age: (document.querySelector('[name="age"]') as HTMLInputElement)?.value,
+        heating: (document.querySelector('[name="heating"]') as HTMLSelectElement)?.value,
+        parking: (document.querySelector('[name="parking"]') as HTMLSelectElement)?.value,
+      };
+    }
+    if (kategori === "Arsa") {
+      return {
+        area: (document.querySelector('[name="area"]') as HTMLInputElement)?.value,
+        cephe: (document.querySelector('[name="cephe"]') as HTMLInputElement)?.value,
+        imarDurumu: (document.querySelector('[name="imarDurumu"]') as HTMLSelectElement)?.value,
+        altYapı: (document.querySelector('[name="altYapı"]') as HTMLInputElement)?.value,
+        tapuDurumu: (document.querySelector('[name="tapuDurumu"]') as HTMLSelectElement)?.value,
+        durum: (document.querySelector('[name="durum"]') as HTMLSelectElement)?.value,
+      };
+    }
+    if (kategori === "Araba") {
+      return {
+        brand: (document.querySelector('[name="brand"]') as HTMLInputElement)?.value,
+        model: (document.querySelector('[name="model"]') as HTMLInputElement)?.value,
+        year: parseInt((document.querySelector('[name="year"]') as HTMLInputElement)?.value || "0"),
+        fuel: (document.querySelector('[name="fuel"]') as HTMLSelectElement)?.value,
+        transmission: (document.querySelector('[name="transmission"]') as HTMLSelectElement)?.value,
+        mileage: (document.querySelector('[name="mileage"]') as HTMLInputElement)?.value,
+        color: (document.querySelector('[name="color"]') as HTMLInputElement)?.value,
+      };
+    }
+    return {};
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const newSpecs = collectSpecs();
+    const finalData: Listing = {
+      ...formData,
+      type: kategori.toLowerCase() as 'ev' | 'arsa' | 'araba',
+      specs: newSpecs,
+    };
+
+    console.log("Gönderilecek veri:", finalData);
+  };
+
+  const showToastMessage = (message: string, type: "success" | "error" = "success") => {
     setToastMessage(message);
     setToastType(type);
     setShowToast(true);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    // Simülasyon: %70 ihtimalle başarılı
-    const success = Math.random() > 0.3;
-
-    if (success) {
-      showToastMessage("İlan başarıyla yayınlandı.", "success");
-    } else {
-      showToastMessage("Bir hata oluştu. Lütfen tekrar deneyin.", "error");
-    }
-  };
-
-  return (
+ return (
     <div className="container mt-4 mb-5">
       <h3 className="mb-4">Yeni İlan Ekle</h3>
       <Row>
@@ -313,9 +371,6 @@ const YeniIlanEkle = () => {
         <Button variant="primary" onClick={handleSubmit}>
           İlanı Yayınla
         </Button>
-                  <div className="spinner-border" role="status">
-  <span className="visually-hidden">Loading...</span>
-</div>
       </div>
 
       {/* Toast Mesajı */}
