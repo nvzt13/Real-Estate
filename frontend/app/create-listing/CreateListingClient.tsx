@@ -20,16 +20,16 @@ const YeniIlanEkle = () => {
 
   const [formData, setFormData] = useState<Listing>({
     id: "",
-    type: "ev",
+    category: "ev",
+    type:'Satılık',
     title: "",
-    location: "",
-    coordinates: [0, 0],
+    description: "",
     price: 0,
-    label: "Yeni",
+    specs: {} as any,
+    location: "",
     imageMain: "",
     images: [],
-    specs: {} as any,
-    description: "",
+    coordinates: [0, 0],
   });
 
   const handleKategoriChange = (e) => {
@@ -84,7 +84,6 @@ const YeniIlanEkle = () => {
     const newSpecs = collectSpecs();
     const finalData: Listing = {
       ...formData,
-      type: kategori.toLowerCase() as 'ev' | 'arsa' | 'araba',
       specs: newSpecs,
     };
 
@@ -114,7 +113,10 @@ const YeniIlanEkle = () => {
         <Col md={6}>
           <Form.Group className="mb-3">
             <Form.Label>İlan Tipi</Form.Label>
-            <Form.Select>
+            <Form.Select
+            name="type"
+            onChange={handleChange}
+            >
               <option>Satılık</option>
               <option>Kiralık</option>
             </Form.Select>
@@ -129,11 +131,17 @@ const YeniIlanEkle = () => {
           <Form>
             <Form.Group className="mb-3">
               <Form.Label>İlan Başlığı *</Form.Label>
-              <Form.Control placeholder="Örn: Merkezi Konumda 3+1 Daire" />
+              <Form.Control placeholder="Örn: Merkezi Konumda 3+1 Daire" 
+              name="title"
+              onChange={handleChange}
+              />
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Açıklama *</Form.Label>
-              <Form.Control as="textarea" rows={3} />
+              <Form.Control as="textarea" rows={3} 
+              name="description"
+              onChange={handleChange}
+              />
             </Form.Group>
           </Form>
         </Card.Body>
@@ -147,172 +155,183 @@ const YeniIlanEkle = () => {
             <Col md={4}>
               <Form.Group className="mb-3">
                 <Form.Label>Fiyat (TL) *</Form.Label>
-                <Form.Control type="number" />
+                <Form.Control type="number"
+                name="price"
+                onChange={handleChange}
+                />
               </Form.Group>
             </Col>
           </Row>
 
           {/* Dinamik Alanlar */}
           {kategori === "Ev" && (
-            <>
-              <Row>
-                <Col md={4}>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Oda Sayısı</Form.Label>
-                    <Form.Control placeholder="Örn: 4+1" />
-                  </Form.Group>
-                </Col>
-                <Col md={4}>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Banyo Sayısı</Form.Label>
-                    <Form.Control type="number" />
-                  </Form.Group>
-                </Col>
-                <Col md={4}>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Isıtma Tipi</Form.Label>
-                    <Form.Select>
-                      <option>Kombi</option>
-                      <option>Merkezi</option>
-                      <option>Soba</option>
-                    </Form.Select>
-                  </Form.Group>
-                </Col>
-              </Row>
-              <Row>
-                <Col md={4}>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Bina Yaşı</Form.Label>
-                    <Form.Control placeholder="Örn: 5 yıl" />
-                  </Form.Group>
-                </Col>
-                <Col md={4}>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Bulunduğu Kat</Form.Label>
-                    <Form.Control type="number" />
-                  </Form.Group>
-                </Col>
-                <Col md={4}>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Otopark</Form.Label>
-                    <Form.Select>
-                      <option>Var</option>
-                      <option>Yok</option>
-                    </Form.Select>
-                  </Form.Group>
-                </Col>
-              </Row>
-            </>
-          )}
+  <>
+    <Row>
+      <Col md={4}>
+        <Form.Group className="mb-3">
+          <Form.Label>Oda Sayısı</Form.Label>
+          <Form.Control name="rooms" placeholder="Örn: 4+1" />
+        </Form.Group>
+      </Col>
+      <Col md={4}>
+        <Form.Group className="mb-3">
+          <Form.Label>Banyo Sayısı</Form.Label>
+          <Form.Control name="area" type="number" />
+        </Form.Group>
+      </Col>
+      <Col md={4}>
+        <Form.Group className="mb-3">
+          <Form.Label>Isıtma Tipi</Form.Label>
+          <Form.Select name="heating">
+            <option>Kombi</option>
+            <option>Merkezi</option>
+            <option>Soba</option>
+          </Form.Select>
+        </Form.Group>
+      </Col>
+    </Row>
+    <Row>
+      <Col md={4}>
+        <Form.Group className="mb-3">
+          <Form.Label>Bina Yaşı</Form.Label>
+          <Form.Control name="age" placeholder="Örn: 5 yıl" />
+        </Form.Group>
+      </Col>
+      <Col md={4}>
+        <Form.Group className="mb-3">
+          <Form.Label>Bulunduğu Kat</Form.Label>
+          <Form.Control name="floor" type="number" />
+        </Form.Group>
+      </Col>
+      <Col md={4}>
+        <Form.Group className="mb-3">
+          <Form.Label>Otopark</Form.Label>
+          <Form.Select name="parking">
+            <option>Var</option>
+            <option>Yok</option>
+          </Form.Select>
+        </Form.Group>
+      </Col>
+    </Row>
+  </>
+)}
 
           {kategori === "Arsa" && (
-            <>
-              <Row>
-                <Col md={4}>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Alan (m²)</Form.Label>
-                    <Form.Control type="number" />
-                  </Form.Group>
-                </Col>
-                <Col md={4}>
-                  <Form.Group className="mb-3">
-                    <Form.Label>İmar Durumu</Form.Label>
-                    <Form.Select>
-                      <option>Konut İmarlı</option>
-                      <option>Ticari</option>
-                      <option>Tarla</option>
-                    </Form.Select>
-                  </Form.Group>
-                </Col>
-                <Col md={4}>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Tapu Durumu</Form.Label>
-                    <Form.Select>
-                      <option>Müstakil Parsel</option>
-                      <option>Hisseli</option>
-                    </Form.Select>
-                  </Form.Group>
-                </Col>
-              </Row>
-              <Row>
-                <Col md={4}>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Cephe (metre)</Form.Label>
-                    <Form.Control type="number" />
-                  </Form.Group>
-                </Col>
-                <Col md={4}>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Altyapı</Form.Label>
-                    <Form.Control placeholder="Elektrik, Su, Yol Var" />
-                  </Form.Group>
-                </Col>
-                <Col md={4}>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Durum</Form.Label>
-                    <Form.Select>
-                      <option>Boş</option>
-                      <option>Ekili</option>
-                      <option>Üzerinde Yapı Var</option>
-                    </Form.Select>
-                  </Form.Group>
-                </Col>
-              </Row>
-            </>
-          )}
+  <>
+    <Row>
+      <Col md={4}>
+        <Form.Group className="mb-3">
+          <Form.Label>Alan (m²)</Form.Label>
+          <Form.Control name="area" type="number" />
+        </Form.Group>
+      </Col>
+      <Col md={4}>
+        <Form.Group className="mb-3">
+          <Form.Label>İmar Durumu</Form.Label>
+          <Form.Select name="imarDurumu">
+            <option>Konut İmarlı</option>
+            <option>Ticari</option>
+            <option>Tarla</option>
+          </Form.Select>
+        </Form.Group>
+      </Col>
+      <Col md={4}>
+        <Form.Group className="mb-3">
+          <Form.Label>Tapu Durumu</Form.Label>
+          <Form.Select name="tapuDurumu">
+            <option>Müstakil Parsel</option>
+            <option>Hisseli</option>
+          </Form.Select>
+        </Form.Group>
+      </Col>
+    </Row>
+    <Row>
+      <Col md={4}>
+        <Form.Group className="mb-3">
+          <Form.Label>Cephe (metre)</Form.Label>
+          <Form.Control name="cephe" type="number" />
+        </Form.Group>
+      </Col>
+      <Col md={4}>
+        <Form.Group className="mb-3">
+          <Form.Label>Altyapı</Form.Label>
+          <Form.Control name="altYapı" placeholder="Elektrik, Su, Yol Var" />
+        </Form.Group>
+      </Col>
+      <Col md={4}>
+        <Form.Group className="mb-3">
+          <Form.Label>Durum</Form.Label>
+          <Form.Select name="durum">
+            <option>Boş</option>
+            <option>Ekili</option>
+            <option>Üzerinde Yapı Var</option>
+          </Form.Select>
+        </Form.Group>
+      </Col>
+    </Row>
+  </>
+)}
 
-          {kategori === "Araba" && (
-            <>
-              <Row>
-                <Col md={4}>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Marka</Form.Label>
-                    <Form.Control placeholder="Örn: BMW" />
-                  </Form.Group>
-                </Col>
-                <Col md={4}>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Model</Form.Label>
-                    <Form.Control placeholder="320i Sport Line" />
-                  </Form.Group>
-                </Col>
-                <Col md={4}>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Model Yılı</Form.Label>
-                    <Form.Control type="number" />
-                  </Form.Group>
-                </Col>
-              </Row>
-              <Row>
-                <Col md={4}>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Yakıt Tipi</Form.Label>
-                    <Form.Select>
-                      <option>Benzin</option>
-                      <option>Dizel</option>
-                      <option>Elektrik</option>
-                      <option>Hibrit</option>
-                    </Form.Select>
-                  </Form.Group>
-                </Col>
-                <Col md={4}>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Vites Tipi</Form.Label>
-                    <Form.Select>
-                      <option>Otomatik</option>
-                      <option>Manuel</option>
-                    </Form.Select>
-                  </Form.Group>
-                </Col>
-                <Col md={4}>
-                  <Form.Group className="mb-3">
-                    <Form.Label>Kilometre</Form.Label>
-                    <Form.Control type="number" />
-                  </Form.Group>
-                </Col>
-              </Row>
-            </>
-          )}
+         {kategori === "Araba" && (
+  <>
+    <Row>
+      <Col md={4}>
+        <Form.Group className="mb-3">
+          <Form.Label>Marka</Form.Label>
+          <Form.Control name="brand" placeholder="Örn: BMW" />
+        </Form.Group>
+      </Col>
+      <Col md={4}>
+        <Form.Group className="mb-3">
+          <Form.Label>Model</Form.Label>
+          <Form.Control name="model" placeholder="320i Sport Line" />
+        </Form.Group>
+      </Col>
+      <Col md={4}>
+        <Form.Group className="mb-3">
+          <Form.Label>Model Yılı</Form.Label>
+          <Form.Control name="year" type="number" />
+        </Form.Group>
+      </Col>
+    </Row>
+    <Row>
+      <Col md={4}>
+        <Form.Group className="mb-3">
+          <Form.Label>Yakıt Tipi</Form.Label>
+          <Form.Select name="fuel">
+            <option>Benzin</option>
+            <option>Dizel</option>
+            <option>Elektrik</option>
+            <option>Hibrit</option>
+          </Form.Select>
+        </Form.Group>
+      </Col>
+      <Col md={4}>
+        <Form.Group className="mb-3">
+          <Form.Label>Vites Tipi</Form.Label>
+          <Form.Select name="transmission">
+            <option>Otomatik</option>
+            <option>Manuel</option>
+          </Form.Select>
+        </Form.Group>
+      </Col>
+      <Col md={4}>
+        <Form.Group className="mb-3">
+          <Form.Label>Kilometre</Form.Label>
+          <Form.Control name="mileage" type="number" />
+        </Form.Group>
+      </Col>
+    </Row>
+    <Row>
+      <Col md={4}>
+        <Form.Group className="mb-3">
+          <Form.Label>Renk</Form.Label>
+          <Form.Control name="color" placeholder="Örn: Siyah" />
+        </Form.Group>
+      </Col>
+    </Row>
+  </>
+)}
         </Card.Body>
       </Card>
 
@@ -323,20 +342,11 @@ const YeniIlanEkle = () => {
           <Row>
             <Col md={4}>
               <Form.Group className="mb-3">
-                <Form.Label>Şehir *</Form.Label>
-                <Form.Control placeholder="İstanbul" />
-              </Form.Group>
-            </Col>
-            <Col md={4}>
-              <Form.Group className="mb-3">
-                <Form.Label>İlçe *</Form.Label>
-                <Form.Control placeholder="Kadıköy" />
-              </Form.Group>
-            </Col>
-            <Col md={4}>
-              <Form.Group className="mb-3">
-                <Form.Label>Mahalle</Form.Label>
-                <Form.Control placeholder="Fenerbahçe" />
+                <Form.Label>Adres *</Form.Label>
+                <Form.Control placeholder="İstanbul/pendik"
+                name="location"
+                onChange={handleChange}
+                />
               </Form.Group>
             </Col>
           </Row>
@@ -344,25 +354,60 @@ const YeniIlanEkle = () => {
       </Card>
 
       {/* Fotoğraflar */}
-      <Card className="mb-4">
-        <Card.Body>
-          <Card.Title>Fotoğraflar</Card.Title>
-          <div
-            className="border p-4 text-center"
-            style={{ borderStyle: "dashed" }}
-          >
-            <p>Fotoğrafları buraya sürükleyin</p>
-            <Form.Group>
-              <Form.Label className="btn btn-primary">Dosya Seç</Form.Label>
-              <Form.Control type="file" multiple hidden />
-              <Form.Text className="text-muted d-block mt-2">
-                PNG, JPG, GIF formatları desteklenir (Maksimum 10MB)
-              </Form.Text>
-            </Form.Group>
-          </div>
-        </Card.Body>
-      </Card>
+{/* Fotoğraflar */}
+<Card className="mb-4">
+  <Card.Body>
+    <Card.Title>Fotoğraflar</Card.Title>
 
+    <Form.Group className="mb-3">
+      <Form.Label>Ana Resim URL</Form.Label>
+      <Form.Control
+        name="imageMain"
+        placeholder="https://example.com/image.jpg"
+        value={formData.imageMain}
+        onChange={handleChange}
+      />
+    </Form.Group>
+
+    <Form.Group className="mb-3">
+      <Form.Label>Alt Resimler (virgülle ayır)</Form.Label>
+      <Form.Control
+        name="images"
+        placeholder="https://url1.com,img2.jpg,img3.jpg"
+        onChange={(e) =>
+          setFormData((prev) => ({
+            ...prev,
+            images: e.target.value.split(",").map((url) => url.trim()),
+          }))
+        }
+      />
+      <Form.Text className="text-muted">
+        En fazla 5-6 görsel önerilir. Örnek: `https://resim1.jpg, https://resim2.jpg`
+      </Form.Text>
+    </Form.Group>
+  </Card.Body>
+</Card>
+<Form.Group className="mb-3">
+  <Form.Label>Koordinatlar (enlem, boylam)</Form.Label>
+  <Form.Control
+    name="coordinates"
+    placeholder="38.4891, 43.3327"
+    onChange={(e) => {
+      const [latStr, lngStr] = e.target.value.split(",").map((val) => val.trim());
+      const lat = parseFloat(latStr);
+      const lng = parseFloat(lngStr);
+      if (!isNaN(lat) && !isNaN(lng)) {
+        setFormData((prev) => ({
+          ...prev,
+          coordinates: [lat, lng],
+        }));
+      }
+    }}
+  />
+  <Form.Text className="text-muted">
+    Örnek: 38.4891, 43.3327
+  </Form.Text>
+</Form.Group>
       {/* Butonlar */}
       <div className="d-flex justify-content-end">
         <Button variant="secondary" className="me-2">

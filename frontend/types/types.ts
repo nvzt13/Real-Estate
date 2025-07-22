@@ -29,14 +29,14 @@ interface LandSpecs {
 // types.ts
 export type Listing = {
   id: string;
-  type: 'araba' | 'ev' | 'arsa';
+  category: 'araba' | 'ev' | 'arsa';
+  type: "satılık" | "kiralık",
   title: string;
-  location: string;
-  coordinates: [number, number];
+  description: string;
   price: number;
-  label: 'Yeni' | 'Kullanılmış' | 'Öne Çıkan';
+  specs: CarSpecs | HouseSpecs | LandSpecs;
+  location: string;
   imageMain: string;
   images: string[];
-  specs: CarSpecs | HouseSpecs | LandSpecs;
-  description: string;
+  coordinates: [number, number];
 };
