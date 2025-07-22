@@ -23,7 +23,7 @@ export const fetchListings = createAsyncThunk("listings/fetchAll", async () => {
 export const addListing = createAsyncThunk(
   "listings/add",
   async (formData: FormData, { dispatch }) => {
-    const res = await fetch("/api/v2/listings", {
+    const res = await fetch("http://localhost:8000/api/listings/", {
       method: "POST",
       body: formData,
     });

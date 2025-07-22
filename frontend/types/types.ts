@@ -1,5 +1,5 @@
 
-interface CarSpecs {
+export interface CarSpecs {
   brand: string;
   model: string;
   year: number;
@@ -8,7 +8,7 @@ interface CarSpecs {
   mileage?: string; // Optional for cars
   color?: string; // Optional for cars  
 }
-interface HouseSpecs {
+export interface HouseSpecs {
   rooms: string;
   area: string; // Area in square meters
   floor: string; // Floor number
@@ -16,7 +16,7 @@ interface HouseSpecs {
   heating: string; // Heating type
   parking: string; // Parking availability
 }
-interface LandSpecs {
+export interface LandSpecs {
   area: string; // Area in square meters
   cephe: string; // Frontage of the land
   imarDurumu: string; // Zoning status
@@ -30,12 +30,12 @@ interface LandSpecs {
 export type Listing = {
   id: string;
   category: 'araba' | 'ev' | 'arsa';
-  type: "satılık" | "kiralık",
+  type: "Satılık" | "Kiralık",
   title: string;
   description: string;
   price: number;
-  specs: CarSpecs | HouseSpecs | LandSpecs;
   location: string;
+  specs: CarSpecs | HouseSpecs | LandSpecs;
   imageMain: string;
   images: string[];
   coordinates: [number, number];

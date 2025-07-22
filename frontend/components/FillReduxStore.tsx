@@ -1,8 +1,8 @@
 "use client"
 import { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { fetchListings } from "@/lib/slice/listingSlice";
-import { RootState, AppDispatch } from "@/lib/store";
+import { AppDispatch } from "@/lib/store";
 
 const FillReduxStore = () => {
   const dispatch = useDispatch<AppDispatch>();
