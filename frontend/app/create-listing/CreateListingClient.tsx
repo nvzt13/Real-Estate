@@ -29,7 +29,7 @@ const YeniIlanEkle = () => {
     price: 0,
     specs: {} as any,
     location: "",
-    imageMain: "",
+    image: "",
     images: [],
     coordinates: [0, 0],
   });
@@ -138,31 +138,9 @@ const handleSubmit = async (e: { preventDefault: () => void }) => {
     specs: newSpecs,
   };
 
-  const formDataObj = new FormData();
-
-  // 🔁 Django'ya uygun key dönüşüm tablosu
-  const djangoKeyMap: Record<string, string> = {
-    imageMain: "imageMain",
-    // Eğer başka key'lerin Django'da snake_case hali varsa onları da buraya eklersin
-  };
-
-  Object.entries(finalData).forEach(([key, value]) => {
-    const finalKey = djangoKeyMap[key] || key;
-
-    if (Array.isArray(value)) {
-      formDataObj.append(finalKey, JSON.stringify(value));
-    } else if (typeof value === "object" && value !== null) {
-      formDataObj.append(finalKey, JSON.stringify(value));
-    } else {
-      formDataObj.append(finalKey, value.toString());
-    }
-  });
-
-  // ✅ Test için konsola yazdırabilirsin:
-  console.log("image_main:", formDataObj.get("image_main"));
 
   try {
-    dispatch(addListing(formDataObj));
+    dispatch(addListing(finalData));
     showToastMessage("İlan başarıyla eklendi!", "success");
   } catch (error) {
     console.error("İlan ekleme hatası:", error);
@@ -474,9 +452,9 @@ const handleSubmit = async (e: { preventDefault: () => void }) => {
           <Form.Group className="mb-3">
             <Form.Label>Ana Resim URL</Form.Label>
             <Form.Control
-              name="imageMain"
+              name="image"
               placeholder="https://example.com/image.jpg"
-              value={formData.imageMain}
+              value={formData.image}
               onChange={handleChange}
             />
           </Form.Group>

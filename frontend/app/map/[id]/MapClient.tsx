@@ -4,21 +4,23 @@ import { Container, Row, Col, Form, FormControl, Button, Card } from 'react-boot
 import { Search, CompassFill } from 'react-bootstrap-icons';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
+import { Listing } from '@/types/types';
+import { useAppSelector } from '@/lib/hooks';
 
 // Leaflet marker icon fix
-delete L.Icon.Default.prototype._getIconUrl;
+delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
   iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
   shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
 });
 
-const MapView = ({ listings }) => {
+const MapView = ({ selectedListing }: { selectedListing: Listing[] }) => {
   return (
     <MapContainer center={[41.0082, 28.9784]} zoom={10} style={{ height: '500px', width: '100%' }}>
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-      {listings.map((item, i) => (
-        <Marker key={i} position={item.coords}>
+      {selectedListing.map((item, i) => (
+        <Marker key={i} position={item.coordinates}>
           <Popup>
             <strong>{item.title}</strong><br />
             {item.price.toLocaleString('tr-TR')}₺
@@ -29,9 +31,10 @@ const MapView = ({ listings }) => {
   );
 };
 
-const RealEstateList = () => {
-  // Örnek ilan verileri (title, price ve coords)
-  const listings = [
+const MapClient = ({ id }: { id:string}) => {
+  const listings = useAppSelector((state) => state.listings.listings);
+  const selectedListing = listings.filter(item => String(item.id) === id);
+  const dummy = [
     {
       title: "Modern Villa in Beşiktaş",
       price: 2500000,
@@ -81,7 +84,7 @@ const RealEstateList = () => {
       {/* Harita Görünümü Bölümü */}
       <Container className="my-4">
         <Card className="text-center p-0 border-0 shadow-sm" style={{ height: '500px', backgroundColor: '#f8f9fa' }}>
-          <MapView listings={listings} />
+          <MapView selectedListing={selectedListing} />
         </Card>
       </Container>
 
@@ -106,4 +109,4 @@ const RealEstateList = () => {
   );
 };
 
-export default RealEstateList;
+export default MapClient;

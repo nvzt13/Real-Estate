@@ -36,7 +36,7 @@ export type Listing = {
   price: number;
   location: string;
   specs: CarSpecs | HouseSpecs | LandSpecs;
-  imageMain: string;
+  image: string;
   images: string[];
   coordinates: [number, number];
 };

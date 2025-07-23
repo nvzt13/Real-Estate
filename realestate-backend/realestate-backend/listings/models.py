@@ -21,7 +21,7 @@ class Listing(models.Model):
     
     location = models.CharField(max_length=200, null=True, blank=True)     
 
-    image_main = models.URLField(null=True, blank=True)                  
+    image = models.URLField(null=True, blank=True)                  
     images = models.JSONField(null=True, blank=True)                     
 
     coordinates = models.JSONField(null=True, blank=True)  # [longitude, latitude]

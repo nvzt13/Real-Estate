@@ -14,11 +14,3 @@ const page = async ({params}: {params: Promise<Params>}) => {
 }
 
 export default page
-
-// interface Params {
-//   id: string;
-// }
-
-// const page = async ({ params }: { params: Promise<Params> }) => {
-//   const  resolveParams = await params;
-//   const {id} = resolveParams

@@ -4,6 +4,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import Header from "@/components/layout/Header";
 import 'leaflet/dist/leaflet.css';
 import StoreProvider from "./StoreProvider";
+import FillReduxStore from "@/components/FillReduxStore";
 
 export const metadata = {
   title: "Villa Agency",
@@ -22,6 +23,7 @@ export default function RootLayout({
         <StoreProvider>
       <Header />
         {children}
+      <FillReduxStore />
         </StoreProvider>
         {/* Bootstrap JS - sadece client-side */}
         <Script

@@ -22,11 +22,15 @@ export const fetchListings = createAsyncThunk("listings/fetchAll", async () => {
 // Yeni ilan ekle
 export const addListing = createAsyncThunk(
   "listings/add",
-  async (formData: FormData, { dispatch }) => {
-    const res = await fetch("http://localhost:8000/api/listings/", {
-      method: "POST",
-      body: formData,
-    });
+  async (formData: Listing, { dispatch }) => {
+ const res = await fetch("http://localhost:8000/api/listings/", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify(formData),
+});
+
     if (!res.ok) throw new Error("İlan eklenemedi");
     const newListing = await res.json();
     dispatch(fetchListings());

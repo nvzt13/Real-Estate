@@ -2,17 +2,16 @@
 import React, { useState } from "react";
 import { Container, Row, Col, Button, Card, ButtonGroup } from "react-bootstrap";
 import { BsBuilding, BsPeople } from "react-icons/bs";
+import AdminListings from "./AdminListings";
+import { useAppSelector } from "@/lib/hooks";
 
 export default function AdminPanel() {
   const [activeTab, setActiveTab] = useState("dashboard");
-
+  const listings = useAppSelector((state) => state.listings.listings);
   return (
     <Container className="py-4">
       <Row className="mb-4 align-items-center">
         <Col><h3 className="fw-bold">Admin Kontrol Paneli</h3></Col>
-        <Col className="text-end">
-          <Button href="/create-listing" variant="primary">Yeni Ilan Ekle</Button>
-        </Col>
       </Row>
 
       {/* Sekmeler */}
@@ -58,7 +57,7 @@ export default function AdminPanel() {
                     <BsBuilding size={24} />
                   </div>
                 </div>
-                <h2>3</h2>
+                <h2> {listings.length} </h2>
                 <p className="text-muted">Aktif ilanlar</p>
               </Card.Body>
             </Card>
@@ -85,7 +84,7 @@ export default function AdminPanel() {
       )}
 
       {/* Diğer sekmeler için içerik örneği (boş bırakıldı) */}
-      {activeTab === "ilanlar" && <p>İlanlar sekmesi içeriği buraya gelecek.</p>}
+      {activeTab === "ilanlar" && <AdminListings />}
       {activeTab === "kullanicilar" && <p>Kullanıcılar sekmesi içeriği buraya gelecek.</p>}
       {activeTab === "mesajlar" && <p>Mesajlar sekmesi içeriği buraya gelecek.</p>}
     </Container>

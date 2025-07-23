@@ -8,12 +8,12 @@ import { Container, Row, Col, Button, Badge } from 'react-bootstrap';
 
 function ListingDetailPage({ id }: { id: string }) {
   const listings = useAppSelector((state) => state.listings.listings);
-  console.log("Listings:", listings);
-  const selectedListing = listings.find(item => item.id === id);  
-  const [mainImage, setMainImage] = useState<string | undefined>(selectedListing?.imageMain);
+  const selectedListing = listings.find(item => String(item.id) === id);  
+  console.log("Selected Listing:", selectedListing);
+  const [mainImage, setMainImage] = useState<string | undefined>(selectedListing?.image);
 
   useEffect(() => {
-    setMainImage(selectedListing?.imageMain);
+    setMainImage(selectedListing?.image);
   }, [selectedListing]);
 
   if (!selectedListing) {
@@ -64,7 +64,7 @@ function ListingDetailPage({ id }: { id: string }) {
         </Col>
 
         <Col lg={6}>
-          {selectedListing.label && <Badge bg="warning" className="mb-2">{selectedListing.label}</Badge>}
+          {selectedListing.type && <Badge bg="warning" className="mb-2">{selectedListing.type}</Badge>}
           <h4>{selectedListing.title}</h4>
           <div className="text-muted">{selectedListing.location}</div>
           <h3 className="mt-2" style={{ color: '#5e1ee8' }}>
@@ -73,24 +73,38 @@ function ListingDetailPage({ id }: { id: string }) {
 
           <h5 className="fw-bold mt-4">Özellikler</h5>
           <Row>
-            {selectedListing.type === "ev" ? (
+            {selectedListing.category === "ev" ? (
               <>
-                <Col xs={6}><p><strong>Oda Sayısı:</strong> {selectedListing.specs.rooms}</p></Col>
-                <Col xs={6}><p><strong>Alan:</strong> {selectedListing.specs.area}</p></Col>
-                <Col xs={6}><p><strong>Kat:</strong> {selectedListing.specs.floor}</p></Col>
-                <Col xs={6}><p><strong>Yaş:</strong> {selectedListing.specs.age}</p></Col>
-                <Col xs={6}><p><strong>Isıtma:</strong> {selectedListing.specs.heating}</p></Col>
-                <Col xs={6}><p><strong>Otopark:</strong> {selectedListing.specs.parking}</p></Col>
+                <Col xs={6}><p><strong>Oda Sayısı:</strong> {'rooms' in selectedListing.specs ? selectedListing.specs.rooms : '-'}</p></Col>
+                <Col xs={6}><p><strong>Alan:</strong> {'area' in selectedListing.specs ? selectedListing.specs.area : '-'}</p></Col>
+                <Col xs={6}><p><strong>Kat:</strong> {'floor' in selectedListing.specs ? selectedListing.specs.floor : '-'}</p></Col>
+                <Col xs={6}><p><strong>Yaş:</strong> {'age' in selectedListing.specs ? selectedListing.specs.age : '-'}</p></Col>
+                <Col xs={6}><p><strong>Isıtma:</strong> {'heating' in selectedListing.specs ? selectedListing.specs.heating : '-'}</p></Col>
+                <Col xs={6}><p><strong>Otopark:</strong> {'parking' in selectedListing.specs ? selectedListing.specs.parking : '-'}</p></Col>
               </>
             ) : (
               <>
-                <Col xs={6}><p><strong>Marka:</strong> {selectedListing.specs.brand}</p></Col>
-                <Col xs={6}><p><strong>Model:</strong> {selectedListing.specs.model}</p></Col>
-                <Col xs={6}><p><strong>Yıl:</strong> {selectedListing.specs.year}</p></Col>
-                <Col xs={6}><p><strong>Yakıt:</strong> {selectedListing.specs.fuel}</p></Col>
-                <Col xs={6}><p><strong>Vites:</strong> {selectedListing.specs.transmission}</p></Col>
-                <Col xs={6}><p><strong>Km:</strong> {selectedListing.specs.mileage}</p></Col>
-                <Col xs={6}><p><strong>Renk:</strong> {selectedListing.specs.color}</p></Col>
+                {'brand' in selectedListing.specs && (
+                  <Col xs={6}><p><strong>Marka:</strong> {selectedListing.specs.brand}</p></Col>
+                )}
+                {'model' in selectedListing.specs && (
+                  <Col xs={6}><p><strong>Model:</strong> {selectedListing.specs.model}</p></Col>
+                )}
+                {'year' in selectedListing.specs && (
+                  <Col xs={6}><p><strong>Yıl:</strong> {selectedListing.specs.year}</p></Col>
+                )}
+                {'fuel' in selectedListing.specs && (
+                  <Col xs={6}><p><strong>Yakıt:</strong> {selectedListing.specs.fuel}</p></Col>
+                )}
+                {'transmission' in selectedListing.specs && (
+                  <Col xs={6}><p><strong>Vites:</strong> {selectedListing.specs.transmission}</p></Col>
+                )}
+                {'mileage' in selectedListing.specs && (
+                  <Col xs={6}><p><strong>Km:</strong> {selectedListing.specs.mileage}</p></Col>
+                )}
+                {'color' in selectedListing.specs && (
+                  <Col xs={6}><p><strong>Renk:</strong> {selectedListing.specs.color}</p></Col>
+                )}
               </>
             )}
           </Row>
