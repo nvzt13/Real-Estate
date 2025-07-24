@@ -121,34 +121,31 @@ const YeniIlanEkle = () => {
     return {} as CarSpecs | HouseSpecs | LandSpecs;
   };
 
-const handleSubmit = async (e: { preventDefault: () => void }) => {
-  e.preventDefault();
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
+    e.preventDefault();
 
-  const newSpecs = collectSpecs();
+    const newSpecs = collectSpecs();
 
-  const kategoriMap: Record<string, "ev" | "arsa" | "araba"> = {
-    Ev: "ev",
-    Arsa: "arsa",
-    Araba: "araba",
+    const kategoriMap: Record<string, "ev" | "arsa" | "araba"> = {
+      Ev: "ev",
+      Arsa: "arsa",
+      Araba: "araba",
+    };
+
+    const finalData: Listing = {
+      ...formData,
+      category: kategoriMap[kategori],
+      specs: newSpecs,
+    };
+
+    try {
+      dispatch(addListing(finalData));
+      showToastMessage("İlan başarıyla eklendi!", "success");
+    } catch (error) {
+      console.error("İlan ekleme hatası:", error);
+      showToastMessage("İlan eklenirken hata oluştu.", "error");
+    }
   };
-
-  const finalData: Listing = {
-    ...formData,
-    category: kategoriMap[kategori],
-    specs: newSpecs,
-  };
-
-
-  try {
-    dispatch(addListing(finalData));
-    showToastMessage("İlan başarıyla eklendi!", "success");
-  } catch (error) {
-    console.error("İlan ekleme hatası:", error);
-    showToastMessage("İlan eklenirken hata oluştu.", "error");
-  }
-};
-
-
 
   const showToastMessage = (
     message: string,
@@ -418,30 +415,29 @@ const handleSubmit = async (e: { preventDefault: () => void }) => {
               </Form.Group>
             </Col>
             <Col md={6}>
-               <Form.Group className="mb-3">
-        <Form.Label>Koordinatlar (enlem, boylam)</Form.Label>
-        <Form.Control
-          name="coordinates"
-          placeholder="38.4891, 43.3327"
-          onChange={(e) => {
-            const [latStr, lngStr] = e.target.value
-              .split(",")
-              .map((val) => val.trim());
-            const lat = parseFloat(latStr);
-            const lng = parseFloat(lngStr);
-            if (!isNaN(lat) && !isNaN(lng)) {
-              setFormData((prev) => ({
-                ...prev,
-                coordinates: [lat, lng],
-              }));
-            }
-          }}
-        />
-      </Form.Group>
+              <Form.Group className="mb-3">
+                <Form.Label>Koordinatlar (enlem, boylam)</Form.Label>
+                <Form.Control
+                  name="coordinates"
+                  placeholder="38.4891, 43.3327"
+                  onChange={(e) => {
+                    const [latStr, lngStr] = e.target.value
+                      .split(",")
+                      .map((val) => val.trim());
+                    const lat = parseFloat(latStr);
+                    const lng = parseFloat(lngStr);
+                    if (!isNaN(lat) && !isNaN(lng)) {
+                      setFormData((prev) => ({
+                        ...prev,
+                        coordinates: [lat, lng],
+                      }));
+                    }
+                  }}
+                />
+              </Form.Group>
             </Col>
           </Row>
         </Card.Body>
-        
       </Card>
 
       {/* Fotoğraflar */}
@@ -474,7 +470,7 @@ const handleSubmit = async (e: { preventDefault: () => void }) => {
           </Form.Group>
         </Card.Body>
       </Card>
-  
+
       {/* Butonlar */}
       <div className="d-flex justify-content-end">
         <Button variant="secondary" className="me-2">
@@ -487,7 +483,6 @@ const handleSubmit = async (e: { preventDefault: () => void }) => {
 
       {/* Toast Mesajı */}
       <ToastContainer
-        position="top-end"
         className="p-3"
         style={{ zIndex: 9999 }}
       >
@@ -497,6 +492,12 @@ const handleSubmit = async (e: { preventDefault: () => void }) => {
           show={showToast}
           delay={3000}
           autohide
+          style={{
+            position: "fixed",
+            top: "1rem",
+            right: "1rem",
+            zIndex: 9999,
+          }}
         >
           <Toast.Header>
             <strong className="me-auto">

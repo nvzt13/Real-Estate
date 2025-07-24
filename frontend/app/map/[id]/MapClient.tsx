@@ -16,11 +16,16 @@ L.Icon.Default.mergeOptions({
 });
 
 const MapView = ({ selectedListing }: { selectedListing: Listing[] }) => {
+  // Ensure center is always a tuple of two numbers
+  const center: [number, number] = selectedListing.length > 0 && Array.isArray(selectedListing[0].coordinates) && selectedListing[0].coordinates.length === 2
+    ? [selectedListing[0].coordinates[0], selectedListing[0].coordinates[1]]
+    : [41.0082, 28.9784];
+
   return (
-    <MapContainer center={[41.0082, 28.9784]} zoom={10} style={{ height: '500px', width: '100%' }}>
+    <MapContainer center={center} zoom={13} style={{ height: '500px', width: '100%' }}>
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
       {selectedListing.map((item, i) => (
-        <Marker key={i} position={item.coordinates}>
+        <Marker key={i} position={item.coordinates as [number, number]}>
           <Popup>
             <strong>{item.title}</strong><br />
             {item.price.toLocaleString('tr-TR')}₺
@@ -30,6 +35,7 @@ const MapView = ({ selectedListing }: { selectedListing: Listing[] }) => {
     </MapContainer>
   );
 };
+
 
 const MapClient = ({ id }: { id:string}) => {
   const listings = useAppSelector((state) => state.listings.listings);

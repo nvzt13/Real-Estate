@@ -1,22 +1,38 @@
 'use client'
 
-import React from 'react'
-import { Table, Button, Form, Row, Col, Badge, InputGroup } from 'react-bootstrap'
-import { FaTrash, FaEdit } from 'react-icons/fa'
+import React, { useState } from 'react'
+import { Table, Button, Form, Row, Col, Badge } from 'react-bootstrap'
+import { FaTrash, FaEdit, FaSave, FaTimes } from 'react-icons/fa'
 import { useAppSelector, useAppDispatch } from '@/lib/hooks'
+import { updateListing } from '@/lib/slice/listingSlice'
 
 const AdminPanel = () => {
   const listings = useAppSelector((state) => state.listings.listings)
   const dispatch = useAppDispatch()
 
-  const handleDelete = (id: string) => {
-    // API call veya Redux dispatch
-    console.log("Silinecek ID:", id)
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [editedListing, setEditedListing] = useState<any>({})
+
+
+  const startEditing = (listing: any) => {
+    setEditingId(listing.id)
+    setEditedListing({ ...listing })
   }
 
-  const handleEdit = (id: string) => {
-    // Edit yönlendirmesi veya modal
-    console.log("Düzenlenecek ID:", id)
+  const cancelEditing = () => {
+    setEditingId(null)
+    setEditedListing({})
+  }
+
+  const handleSave = () => {
+    console.log('Güncellenen veri:', editedListing)
+    dispatch(updateListing(editedListing))
+    // dispatch(updateListing(editedListing)) gibi bir işlem yapılabilir
+    setEditingId(null)
+  }
+
+  const handleChange = (field: string, value: string) => {
+    setEditedListing((prev: any) => ({ ...prev, [field]: value }))
   }
 
   const getBadge = (status: string) => {
@@ -32,33 +48,17 @@ const AdminPanel = () => {
     }
   }
 
+  function deleteListing(id: string): any {
+    throw new Error('Function not implemented.')
+  }
+
   return (
     <div className="p-4">
-      <div className="d-flex justify-content-between align-items-center mb-3">
+      {/* Arama ve filtreleme kısmı aynı kalabilir */}
+        <div className="d-flex justify-content-between align-items-center mb-3">
         <h3>İlanlar</h3>
         <Button variant="primary" href='/create-listing'>Yeni İlan Ekle</Button>
       </div>
-
-      <Row className="mb-3">
-        <Col md={4}>
-          <Form.Control type="text" placeholder="İlan ara..." />
-        </Col>
-        <Col md={3}>
-          <Form.Select>
-            <option>Tüm Tipler</option>
-            <option>Satılık</option>
-            <option>Kiralık</option>
-          </Form.Select>
-        </Col>
-        <Col md={3}>
-          <Form.Select>
-            <option>Tüm Durumlar</option>
-            <option>Aktif</option>
-            <option>Beklemede</option>
-            <option>Pasif</option>
-          </Form.Select>
-        </Col>
-      </Row>
 
       <Table responsive bordered hover>
         <thead>
@@ -74,45 +74,99 @@ const AdminPanel = () => {
           {listings.map((listing) => (
             <tr key={listing.id}>
               <td>
-                {listing.title}
+                {editingId === listing.id ? (
+                  <Form.Control
+                    type="text"
+                    value={editedListing.title}
+                    onChange={(e) => handleChange('title', e.target.value)}
+                  />
+                ) : (
+                  listing.title
+                )}
               </td>
-              <td>{listing.location}</td>
               <td>
-                <Badge bg={listing.type === 'Satılık' ? 'success' : 'warning'} text={listing.type === 'Satılık' ? undefined : 'dark'}>
-                  {listing.type}
-                </Badge>
+                {editingId === listing.id ? (
+                  <Form.Control
+                    type="text"
+                    value={editedListing.location}
+                    onChange={(e) => handleChange('location', e.target.value)}
+                  />
+                ) : (
+                  listing.location
+                )}
               </td>
-              <td>{listing.price} ₺</td>
               <td>
-                <Button
-                  variant="outline-primary"
-                  size="sm"
-                  className="me-2"
-                  onClick={() => handleEdit(listing.id)}
-                >
-                  <FaEdit />
-                </Button>
-                <Button
-                  variant="outline-danger"
-                  size="sm"
-                  onClick={() => handleDelete(listing.id)}
-                >
-                  <FaTrash />
-                </Button>
+                {editingId === listing.id ? (
+                  <Form.Select
+                    value={editedListing.type}
+                    onChange={(e) => handleChange('type', e.target.value)}
+                  >
+                    <option>Satılık</option>
+                    <option>Kiralık</option>
+                  </Form.Select>
+                ) : (
+                  <Badge
+                    bg={listing.type === 'Satılık' ? 'success' : 'warning'}
+                    text={listing.type === 'Satılık' ? undefined : 'dark'}
+                  >
+                    {listing.type}
+                  </Badge>
+                )}
+              </td>
+              <td>
+                {editingId === listing.id ? (
+                  <Form.Control
+                    type="number"
+                    value={editedListing.price}
+                    onChange={(e) => handleChange('price', e.target.value)}
+                  />
+                ) : (
+                  `${listing.price} ₺`
+                )}
+              </td>
+              <td>
+                {editingId === listing.id ? (
+                  <>
+                    <Button
+                      variant="success"
+                      size="sm"
+                      className="me-2"
+                      onClick={handleSave}
+                    >
+                      <FaSave />
+                    </Button>
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      onClick={cancelEditing}
+                    >
+                      <FaTimes />
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      variant="outline-primary"
+                      size="sm"
+                      className="me-2"
+                      onClick={() => startEditing(listing)}
+                    >
+                      <FaEdit />
+                    </Button>
+                    <Button
+                      variant="outline-danger"
+                      size="sm"
+                      onClick={() => dispatch(deleteListing(listing.id))}
+                    >
+                      <FaTrash />
+                    </Button>
+                  </>
+                )}
               </td>
             </tr>
           ))}
         </tbody>
       </Table>
-
-      <div className="d-flex justify-content-between align-items-center">
-        <span>Toplam {listings.length} ilan</span>
-        <div>
-          <Button variant="light" size="sm" className="me-2">Önceki</Button>
-          <Button variant="primary" size="sm">1</Button>
-          <Button variant="light" size="sm" className="ms-2">Sonraki</Button>
-        </div>
-      </div>
     </div>
   )
 }

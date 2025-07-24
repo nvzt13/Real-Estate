@@ -23,36 +23,66 @@ export const fetchListings = createAsyncThunk("listings/fetchAll", async () => {
 export const addListing = createAsyncThunk(
   "listings/add",
   async (formData: Listing, { dispatch }) => {
- const res = await fetch("http://localhost:8000/api/listings/", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify(formData),
-});
+    try {
+       const res = await fetch("http://localhost:8000/api/listings/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
 
     if (!res.ok) throw new Error("İlan eklenemedi");
     const newListing = await res.json();
     dispatch(fetchListings());
     return newListing;
+    } catch (error) {
+      console.error("Ekleme hatası:", error);
+      throw error;
+    }
   }
 );
 
+// ilanı sil
+export const deleleteListing = createAsyncThunk(
+  "lisitngs/delete",
+  async (id: string) => {
+    const res = await fetch(`http://localhost:8000/api/listings/${id}/`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!res.ok) throw new Error("İlan silinemedi");
+    const deleted = await res.json();
+    return deleted;
+  }
+);
 // İlan güncelle
 export const updateListing = createAsyncThunk(
   "listings/update",
-  async (
-    { listingId, formData }: { listingId: string; formData: FormData },
-    { dispatch }
-  ) => {
-    const res = await fetch(`/api/v2/listings/${listingId}/`, {
-      method: "PUT",
-      body: formData,
-    });
-    if (!res.ok) throw new Error("İlan güncellenemedi");
-    const updated = await res.json();
-    dispatch(fetchListings());
-    return updated;
+  async (formData: Listing, { dispatch }) => {
+    console.log(formData);
+    try {
+      const res = await fetch(
+        `http://localhost:8000/api/listings/${formData.id}/`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json", // Added missing Content-Type header
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+
+      if (!res.ok) throw new Error("İlan güncellenemedi");
+      const updated = await res.json();
+      dispatch(fetchListings());
+      return updated;
+    } catch (error) {
+      console.error("Güncelleme hatası:", error);
+      throw error;
+    }
   }
 );
 
@@ -91,14 +121,18 @@ const listingSlice = createSlice({
       })
 
       .addCase(updateListing.fulfilled, (state, action) => {
-        const index = state.listings.findIndex((l) => l.id === action.payload.id);
+        const index = state.listings.findIndex(
+          (l) => l.id === action.payload.id
+        );
         if (index !== -1) {
           state.listings[index] = action.payload;
         }
       })
 
       .addCase(toggleAvailability.fulfilled, (state, action) => {
-        const index = state.listings.findIndex((l) => l.id === action.payload.id);
+        const index = state.listings.findIndex(
+          (l) => l.id === action.payload.id
+        );
         if (index !== -1) {
           state.listings[index] = action.payload;
         }
