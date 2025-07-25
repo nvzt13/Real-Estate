@@ -1,51 +1,83 @@
 "use client";
-import { useState } from 'react';
-import { Button, Form, Card, Alert } from 'react-bootstrap';
+
+import { useState } from "react";
+import { Button, Form, Card, Alert } from "react-bootstrap";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/lib/store";
+import { createUserAsync } from "@/lib/slice/userSlice";
 
 function RegisterForm() {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const dispatch = useDispatch<AppDispatch>();
+
+  const [formData, setFormData] = useState({
+    name: "",
+    lastName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
   const [showError, setShowError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+  dispatch(createUserAsync(formData))
+    const { name, lastName, email, password, confirmPassword } = formData;
 
-    if (!name || !email || !password || !confirmPassword) {
-      setErrorMessage('Lütfen tüm alanları doldurun');
+    if (!name || !lastName || !email || !password || !confirmPassword) {
+      setErrorMessage("Lütfen tüm alanları doldurun");
       setShowError(true);
       return;
     }
 
     if (password !== confirmPassword) {
-      setErrorMessage('Şifreler eşleşmiyor');
+      setErrorMessage("Şifreler eşleşmiyor");
       setShowError(true);
       return;
     }
 
-    // Kayıt işlemleri burada yapılır
-    console.log("Kayıt bilgileri:", { name, email, password });
+    const { confirmPassword: _, ...userData } = formData; // confirmPassword dahil edilmesin
+    console.log("Kayıt bilgileri:", userData);
     setShowError(false);
   };
 
   return (
     <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
-      <Card style={{ width: '25rem' }} className="p-4 shadow-sm">
+      <Card style={{ width: "25rem" }} className="p-4 shadow-sm">
         <div className="d-flex justify-content-between align-items-center mb-3">
           <h4 className="mb-0">Kayıt Ol</h4>
-          <span style={{ cursor: 'pointer' }}>×</span>
+          <span style={{ cursor: "pointer" }}>×</span>
         </div>
 
         <Form onSubmit={handleSubmit}>
           <Form.Group controlId="formName" className="mb-3">
-            <Form.Label>Ad Soyad</Form.Label>
+            <Form.Label>Ad</Form.Label>
             <Form.Control
               type="text"
-              placeholder="Adınızı ve soyadınızı girin"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              name="name"
+              placeholder="Adınız"
+              value={formData.name}
+              onChange={handleChange}
+            />
+          </Form.Group>
+
+          <Form.Group controlId="formLastName" className="mb-3">
+            <Form.Label>Soyad</Form.Label>
+            <Form.Control
+              type="text"
+              name="lastName"
+              placeholder="Soyadınız"
+              value={formData.lastName}
+              onChange={handleChange}
             />
           </Form.Group>
 
@@ -53,9 +85,10 @@ function RegisterForm() {
             <Form.Label>E-posta</Form.Label>
             <Form.Control
               type="email"
+              name="email"
               placeholder="ornek@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={formData.email}
+              onChange={handleChange}
             />
           </Form.Group>
 
@@ -63,9 +96,10 @@ function RegisterForm() {
             <Form.Label>Şifre</Form.Label>
             <Form.Control
               type="password"
+              name="password"
               placeholder="Şifrenizi girin"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={formData.password}
+              onChange={handleChange}
             />
           </Form.Group>
 
@@ -73,15 +107,14 @@ function RegisterForm() {
             <Form.Label>Şifre Tekrar</Form.Label>
             <Form.Control
               type="password"
+              name="confirmPassword"
               placeholder="Şifrenizi tekrar girin"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              value={formData.confirmPassword}
+              onChange={handleChange}
             />
           </Form.Group>
 
-          {showError && (
-            <Alert variant="danger">{errorMessage}</Alert>
-          )}
+          {showError && <Alert variant="danger">{errorMessage}</Alert>}
 
           <Button variant="primary" type="submit" className="w-100">
             Kayıt Ol

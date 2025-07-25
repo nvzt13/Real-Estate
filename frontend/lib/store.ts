@@ -1,12 +1,14 @@
 // store.ts
 import { configureStore } from "@reduxjs/toolkit";
 import listingReducer from "./slice/listingSlice";
+import userReducer from "./slice/userSlice";
 
 
 export const makeStore = () => {
   return configureStore({
      reducer: {
     listings: listingReducer,
+    users: userReducer,
   },
   })
 }
