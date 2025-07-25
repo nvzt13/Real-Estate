@@ -4,17 +4,17 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 class CustomUserAdmin(BaseUserAdmin):
     model = CustomUser
-    list_display = ('email', 'first_name', 'last_name', 'is_staff')
+    list_display = ('email', 'name', 'lastName', 'is_staff')
     list_filter = ('is_staff', 'is_superuser')
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        ('Kişisel Bilgiler', {'fields': ('first_name', 'last_name')}),
+        ('Kişisel Bilgiler', {'fields': ('name', 'lastName')}),
         ('İzinler', {'fields': ('is_staff', 'is_superuser', 'groups', 'user_permissions')}),
     )
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'first_name', 'last_name', 'password1', 'password2')}
+            'fields': ('email', 'name', 'lastName', 'password1', 'password2')}
         ),
     )
     search_fields = ('email',)

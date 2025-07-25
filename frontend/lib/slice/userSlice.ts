@@ -33,14 +33,17 @@ export const createUserAsync = createAsyncThunk(
         body: JSON.stringify(userData),
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        return thunkAPI.rejectWithValue(errorData);
-      }
+ if (!response.ok) {
+  const errorData = await response.json();
+  console.log("Kullanıcı kaydı başarısız:", errorData); // BURASI DÜZELTİLDİ
+  return thunkAPI.rejectWithValue(errorData);
+}
+
 
       const data = await response.json();
       return data;
     } catch (error) {
+      console.log("Kullanıcı kaydı sırasında hata:", error);
       return thunkAPI.rejectWithValue("Bir hata oluştu");
     }
   }

@@ -40,11 +40,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',   # Django Rest Framework: API endpointleri oluşturmak için.
+    'rest_framework',
+    'corsheaders',
     'listings',
-    'users',         # Bizim oluşturduğumuz app, ilan modellerini burada tutacağız.
-     "corsheaders",
-
+    'users',
+     
 ]
 
 MIDDLEWARE = [
