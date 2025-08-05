@@ -33,10 +33,9 @@ export type Listing = {
   type: "Satılık" | "Kiralık",
   title: string;
   description: string;
-  price: number;
+  price: number | null; // Nullable for listings without a price
   location: string;
   specs: CarSpecs | HouseSpecs | LandSpecs;
-  image: string;
   images: string[];
-  coordinates: [number, number];
+  coordinates: number[] | null; // Nullable for listings without coordinates
 };

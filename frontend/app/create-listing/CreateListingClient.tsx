@@ -26,12 +26,11 @@ const YeniIlanEkle = () => {
     type: "Satılık",
     title: "",
     description: "",
-    price: 0,
+    price: null,
     specs: {} as any,
     location: "",
-    image: "",
     images: [],
-    coordinates: [0, 0],
+    coordinates: null,
   });
 
   const handleKategoriChange = (e: {
@@ -124,6 +123,10 @@ const YeniIlanEkle = () => {
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
 
+      // if(!formData.title || !formData.description || !formData.price || !formData.location || !formData.images ) {
+      // showToastMessage("Lütfen tüm zorunlu alanları doldurun!", "error");
+      // return;
+      // }
     const newSpecs = collectSpecs();
 
     const kategoriMap: Record<string, "ev" | "arsa" | "araba"> = {
@@ -137,17 +140,10 @@ const YeniIlanEkle = () => {
       category: kategoriMap[kategori],
       specs: newSpecs,
     };
-
-    try {
-      dispatch(addListing(finalData));
-      showToastMessage("İlan başarıyla eklendi!", "success");
-    } catch (error) {
-      console.error("İlan ekleme hatası:", error);
-      showToastMessage("İlan eklenirken hata oluştu.", "error");
-    }
+    dispatch(addListing(finalData));
   };
 
-  const showToastMessage = (
+  const  showToastMessage = (
     message: string,
     type: "success" | "error" = "success"
   ) => {
@@ -446,17 +442,7 @@ const YeniIlanEkle = () => {
           <Card.Title>Fotoğraflar</Card.Title>
 
           <Form.Group className="mb-3">
-            <Form.Label>Ana Resim URL</Form.Label>
-            <Form.Control
-              name="image"
-              placeholder="https://example.com/image.jpg"
-              value={formData.image}
-              onChange={handleChange}
-            />
-          </Form.Group>
-
-          <Form.Group className="mb-3">
-            <Form.Label>Alt Resimler</Form.Label>
+            <Form.Label>Resimler</Form.Label>
             <Form.Control
               name="images"
               placeholder="https://url1.com,img2.jpg,img3.jpg"
@@ -481,32 +467,7 @@ const YeniIlanEkle = () => {
         </Button>
       </div>
 
-      {/* Toast Mesajı */}
-      <ToastContainer
-        className="p-3"
-        style={{ zIndex: 9999 }}
-      >
-        <Toast
-          bg={toastType === "success" ? "success" : "danger"}
-          onClose={() => setShowToast(false)}
-          show={showToast}
-          delay={3000}
-          autohide
-          style={{
-            position: "fixed",
-            top: "1rem",
-            right: "1rem",
-            zIndex: 9999,
-          }}
-        >
-          <Toast.Header>
-            <strong className="me-auto">
-              {toastType === "success" ? "Başarılı" : "Hata"}
-            </strong>
-          </Toast.Header>
-          <Toast.Body className="text-white">{toastMessage}</Toast.Body>
-        </Toast>
-      </ToastContainer>
+   
     </div>
   );
 };

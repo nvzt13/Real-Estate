@@ -10,10 +10,10 @@ function ListingDetailPage({ id }: { id: string }) {
   const listings = useAppSelector((state) => state.listings.listings);
   const selectedListing = listings.find(item => String(item.id) === id);  
   console.log("Selected Listing:", selectedListing);
-  const [mainImage, setMainImage] = useState<string | undefined>(selectedListing?.image);
+  const [mainImage, setMainImage] = useState<string | undefined>(selectedListing?.images[0]);
 
   useEffect(() => {
-    setMainImage(selectedListing?.image);
+    setMainImage(selectedListing?.images[0]);
   }, [selectedListing]);
 
   if (!selectedListing) {

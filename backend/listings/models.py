@@ -19,13 +19,12 @@ class Listing(models.Model):
     description = models.TextField()                        
     price = models.DecimalField(max_digits=12, decimal_places=2)  
     
-    location = models.CharField(max_length=200, null=True, blank=True)     
+    location = models.CharField(max_length=200)     
 
-    image = models.URLField(null=True, blank=True)                  
-    images = models.JSONField(null=True, blank=True)                     
+    images = models.JSONField()                     
 
-    coordinates = models.JSONField(null=True, blank=True)  # [longitude, latitude]
-    specs = models.JSONField(null=True, blank=True)                      
+    coordinates = models.JSONField()  # [longitude, latitude]
+    specs = models.JSONField()                      
 
     created_at = models.DateTimeField(auto_now_add=True)                
     updated_at = models.DateTimeField(auto_now=True)                    

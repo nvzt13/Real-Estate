@@ -30,7 +30,7 @@ function GenericCard({ data }: GenericCardProps) {
         🤍
       </div>
 
-      <Card.Img variant="top" src={data?.image} style={{ height: '200px', objectFit: 'cover' }} />
+      <Card.Img variant="top" src={data?.images[0]} style={{ height: '200px', objectFit: 'cover' }} />
 
       <Card.Body>
         <Card.Title style={{ fontSize: '1rem' }}>{data.title}</Card.Title>

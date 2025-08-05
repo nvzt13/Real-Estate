@@ -30,7 +30,6 @@ function RegisterForm() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-  dispatch(createUserAsync(formData))
     const { name, lastName, email, password, confirmPassword } = formData;
 
     if (!name || !lastName || !email || !password || !confirmPassword) {
@@ -48,6 +47,7 @@ function RegisterForm() {
     const { confirmPassword: _, ...userData } = formData; // confirmPassword dahil edilmesin
     console.log("Kayıt bilgileri:", userData);
     setShowError(false);
+    dispatch(createUserAsync(formData));
   };
 
   return (

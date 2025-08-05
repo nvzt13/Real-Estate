@@ -31,13 +31,15 @@ export const addListing = createAsyncThunk(
       },
       body: JSON.stringify(formData),
     });
-
-    if (!res.ok) throw new Error("İlan eklenemedi");
+    if (!res.ok) {
+      const errorData = await res.json();
+      console.error("İlan eklenemedi:", errorData);
+      throw new Error("İlan eklenemedi");
+    };
     const newListing = await res.json();
     dispatch(fetchListings());
     return newListing;
     } catch (error) {
-      console.error("Ekleme hatası:", error);
       throw error;
     }
   }
@@ -119,7 +121,9 @@ const listingSlice = createSlice({
       .addCase(addListing.fulfilled, (state, action) => {
         state.listings.push(action.payload);
       })
-
+      .addCase(addListing.rejected, (state) => {
+        state.loading = false;
+      })
       .addCase(updateListing.fulfilled, (state, action) => {
         const index = state.listings.findIndex(
           (l) => l.id === action.payload.id
