@@ -5,7 +5,8 @@ import Header from "@/components/layout/Header";
 import 'leaflet/dist/leaflet.css';
 import StoreProvider from "./StoreProvider";
 import FillReduxStore from "@/components/FillReduxStore";
-
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 export const metadata = {
   title: "Villa Agency",
   description: "Real Estate App",
@@ -24,6 +25,7 @@ export default function RootLayout({
       <Header />
         {children}
       <FillReduxStore />
+            <ToastContainer position="top-right" autoClose={3000} />
         </StoreProvider>
         {/* Bootstrap JS - sadece client-side */}
         <Script
@@ -37,3 +39,5 @@ export default function RootLayout({
     </html>
   );
 }
+
+

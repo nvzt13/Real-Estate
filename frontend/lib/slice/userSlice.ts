@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { toast } from 'react-toastify';
 
 export interface User {
   id?: string;
@@ -11,13 +12,11 @@ export interface User {
 interface UserState {
   users: User[];
   loading: boolean;
-  error: string | null;
 }
 
 const initialState: UserState = {
   users: [],
   loading: false,
-  error: null,
 };
 
 // 🔥 ASYNC THUNK: kullanıcıyı Django API'ye kaydet
@@ -35,12 +34,13 @@ export const createUserAsync = createAsyncThunk(
 
  if (!response.ok) {
   const errorData = await response.json();
-  console.log("Kullanıcı kaydı başarısız:", errorData); // BURASI DÜZELTİLDİ
+  for (const key in errorData){
+    toast.error(errorData[key][0])
+  }
   return thunkAPI.rejectWithValue(errorData);
 }
-
-
       const data = await response.json();
+      toast.success("Kayıt işlemi başarılı!")
       return data;
     } catch (error) {
       console.log("Kullanıcı kaydı sırasında hata:", error);
@@ -57,7 +57,6 @@ const userSlice = createSlice({
     builder
       .addCase(createUserAsync.pending, (state) => {
         state.loading = true;
-        state.error = null;
       })
       .addCase(createUserAsync.fulfilled, (state, action: PayloadAction<User>) => {
         state.loading = false;
@@ -65,7 +64,6 @@ const userSlice = createSlice({
       })
       .addCase(createUserAsync.rejected, (state, action: PayloadAction<any>) => {
         state.loading = false;
-        state.error = action.payload;
       });
   },
 });

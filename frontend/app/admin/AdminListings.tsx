@@ -5,7 +5,7 @@ import { Table, Button, Form, Row, Col, Badge } from "react-bootstrap";
 import { FaTrash, FaEdit, FaSave, FaTimes } from "react-icons/fa";
 import { useAppSelector, useAppDispatch } from "@/lib/hooks";
 import { updateListing } from "@/lib/slice/listingSlice";
-
+import {deleleteListing} from "@/lib/slice/listingSlice"
 const AdminPanel = () => {
   const listings = useAppSelector((state) => state.listings.listings);
   const dispatch = useAppDispatch();
@@ -51,9 +51,6 @@ const AdminPanel = () => {
     }
   };
 
-  function deleteListing(id: string): any {
-    throw new Error("Function not implemented.");
-  }
 
   return (
     <div className="p-4">
@@ -161,7 +158,7 @@ const AdminPanel = () => {
                     <Button
                       variant="outline-danger"
                       size="sm"
-                      onClick={() => dispatch(deleteListing(listing.id))}
+                      onClick={() => dispatch(deleleteListing(listing.id))}
                     >
                       <FaTrash />
                     </Button>

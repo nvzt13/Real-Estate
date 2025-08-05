@@ -1,5 +1,5 @@
 "use client";
-import { useAppDispatch } from "@/lib/hooks";
+import { useAppDispatch, useAppSelector} from "@/lib/hooks";
 import { addListing } from "@/lib/slice/listingSlice";
 import { CarSpecs, HouseSpecs, LandSpecs, Listing } from "@/types/types";
 import React, { useState } from "react";
@@ -9,17 +9,17 @@ import {
   Card,
   Row,
   Col,
-  Toast,
-  ToastContainer,
 } from "react-bootstrap";
+import { toast } from 'react-toastify'
 
 const YeniIlanEkle = () => {
   const dispatch = useAppDispatch();
   const [kategori, setKategori] = useState("Ev");
-  const [toastMessage, setToastMessage] = useState("");
-  const [toastType, setToastType] = useState("success");
-  const [showToast, setShowToast] = useState(false);
-
+  const loading = useAppSelector((state) => (
+    state.listings.loading)
+  )
+  console.log(loading)
+  console.log("loading")
   const [formData, setFormData] = useState<Listing>({
     id: "",
     category: "ev",
@@ -123,10 +123,10 @@ const YeniIlanEkle = () => {
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
 
-      // if(!formData.title || !formData.description || !formData.price || !formData.location || !formData.images ) {
-      // showToastMessage("Lütfen tüm zorunlu alanları doldurun!", "error");
-      // return;
-      // }
+     if(!formData.title || !formData.description || !formData.price || !formData.location || !formData.images ) {
+      toast.error("Lütfen tüm zorunlu alanları doldurun!", "error");
+     return;
+      }
     const newSpecs = collectSpecs();
 
     const kategoriMap: Record<string, "ev" | "arsa" | "araba"> = {
@@ -143,14 +143,6 @@ const YeniIlanEkle = () => {
     dispatch(addListing(finalData));
   };
 
-  const  showToastMessage = (
-    message: string,
-    type: "success" | "error" = "success"
-  ) => {
-    setToastMessage(message);
-    setToastType(type);
-    setShowToast(true);
-  };
 
   return (
     <div className="container mt-4 mb-5">
@@ -463,7 +455,9 @@ const YeniIlanEkle = () => {
           Temizle
         </Button>
         <Button variant="primary" onClick={handleSubmit}>
-          İlanı Yayınla
+          {
+            loading ? "loading..." : "İlanı Yayınla"
+          }
         </Button>
       </div>
 

@@ -1,7 +1,7 @@
 // features/listing/listingSlice.ts
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { Listing } from "@/types/types";
-
+import { toast } from 'react-toastify'
 // Başlangıç durumu
 const initialState: {
   listings: Listing[];
@@ -33,17 +33,21 @@ export const addListing = createAsyncThunk(
     });
     if (!res.ok) {
       const errorData = await res.json();
-      console.error("İlan eklenemedi:", errorData);
-      throw new Error("İlan eklenemedi");
+      for (const key in errorData) {
+        toast.error(errorData[key][0])
+      }
     };
     const newListing = await res.json();
     dispatch(fetchListings());
+    toast.success("İlan başarılı bir şekilde eklendi!")
     return newListing;
     } catch (error) {
-      throw error;
+      console.log(error)
+      toast.error(error.message)
     }
   }
 );
+
 
 // ilanı sil
 export const deleleteListing = createAsyncThunk(
@@ -55,7 +59,8 @@ export const deleleteListing = createAsyncThunk(
         "Content-Type": "application/json",
       },
     });
-    if (!res.ok) throw new Error("İlan silinemedi");
+    if (!res.ok) toast.error("İlan silinirken bir hata oluştu!")
+    toast.success("İlan başarılı bir şekilde silindi!");
     const deleted = await res.json();
     return deleted;
   }
@@ -77,9 +82,10 @@ export const updateListing = createAsyncThunk(
         }
       );
 
-      if (!res.ok) throw new Error("İlan güncellenemedi");
+      if (!res.ok) toast.error("İlan güncellenirken bir hata oluştu!")
       const updated = await res.json();
       dispatch(fetchListings());
+      toast.success("İlan başarılı bir şekilde güncellendi!")
       return updated;
     } catch (error) {
       console.error("Güncelleme hatası:", error);
@@ -117,9 +123,12 @@ const listingSlice = createSlice({
         state.loading = false;
         alert("İlanlar getirilemedi");
       })
-
+      .addCase(addListing.pending, (state) =>{
+        state.loading = true
+      })
       .addCase(addListing.fulfilled, (state, action) => {
         state.listings.push(action.payload);
+        state.loading = false;
       })
       .addCase(addListing.rejected, (state) => {
         state.loading = false;
