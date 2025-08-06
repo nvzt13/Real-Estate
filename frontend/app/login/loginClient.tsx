@@ -1,25 +1,67 @@
-"use client";
+"use client"
 import { useAppDispatch } from '@/lib/hooks';
 import { loginUserAsync } from '@/lib/slice/userSlice';
-import { useState } from 'react';
-import { Button, Form, Card, Alert, Modal } from 'react-bootstrap';
+import { useState, useEffect } from 'react';
+import { Button, Form, Card, Alert } from 'react-bootstrap';
+import { jwtDecode } from 'jwt-decode';
+
+interface DecodedToken {
+  id: string;
+  email: string;
+}
 
 function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showError, setShowError] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null);
+
   const dispatch = useAppDispatch();
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (!email || !password) {
-      setShowError(true);
-      return;
+  if (!email || !password) {
+    setShowError(true);
+    return;
+  }
+
+  dispatch(loginUserAsync({ email, password }))
+    .then(() => {
+      const token = localStorage.getItem("accessToken");
+      console.log("Login sonrası token:", token);
+      if (token) {
+        try {
+          const decoded: DecodedToken = jwtDecode(token);
+          setUserId(decoded.id);
+          console.log("Decoded user ID:", decoded.id);
+        } catch (error) {
+          console.error("Token çözümlenemedi", error);
+        }
+      } else {
+        console.log("Henüz token yok.");
+      }
+    });
+
+  setShowError(false);
+};
+
+  // Token varsa decode et
+  useEffect(() => {
+    const token = localStorage.getItem("accessToken");
+    console.log(token)
+    if (token) {
+      try {
+        const decoded: DecodedToken = jwtDecode(token);
+        setUserId(decoded.id);
+        console.log("Decoded user ID:", decoded.id);
+      } catch (error) {
+        console.error("Token çözümlenemedi", error);
+      }
+    } else {
+      console.log("Henüz token yok.");
     }
-    dispatch(loginUserAsync({ email, password }));
-    setShowError(false);
-  };
+  }, [email, password]); // Bu kısımda farklı bir trigger koymak gerekebilir.
 
   return (
     <div className="d-flex justify-content-center align-items-center vh-100 bg-light">

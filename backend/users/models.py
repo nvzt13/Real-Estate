@@ -25,6 +25,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
 
+    favorites = models.ManyToManyField('listings.Listing', related_name='favorited_by', blank=True)
+
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'
