@@ -1,11 +1,13 @@
 "use client";
-import React from "react";
+import React, { use } from "react";
 import Link from "next/link";
 import { Container, Navbar, Nav, Button, Offcanvas, Dropdown, Image as RBImage } from "react-bootstrap";
 import Image from "next/image";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 
 function Header() {
-  const login = false;
+  const login = useAppSelector((state) => state.users.isLoggedIn);
+  const dispatch = useAppDispatch();
 
   return (
     <Navbar expand="md" className="shadow-sm position-relative" style={{ zIndex: 1040 }}>
@@ -60,7 +62,7 @@ function Header() {
                     Favoriler
                   </Dropdown.Item>
                   <Dropdown.Divider />
-                  <Button variant="danger" className="w-100 mt-2">
+                  <Button variant="danger" className="w-100 mt-2" onClick={() => dispatch(logout()) }>
                     Çıkış Yap
                   </Button>
                 </Dropdown.Menu>

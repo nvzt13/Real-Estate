@@ -1,4 +1,6 @@
 "use client";
+import { useAppDispatch } from '@/lib/hooks';
+import { loginUserAsync } from '@/lib/slice/userSlice';
 import { useState } from 'react';
 import { Button, Form, Card, Alert, Modal } from 'react-bootstrap';
 
@@ -6,6 +8,7 @@ function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showError, setShowError] = useState(false);
+  const dispatch = useAppDispatch();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -14,9 +17,7 @@ function LoginForm() {
       setShowError(true);
       return;
     }
-
-    // Giriş işlemleri burada yapılır
-    console.log("Giriş yapıldı:", { email, password });
+    dispatch(loginUserAsync({ email, password }));
     setShowError(false);
   };
 

@@ -18,8 +18,6 @@ const YeniIlanEkle = () => {
   const loading = useAppSelector((state) => (
     state.listings.loading)
   )
-  console.log(loading)
-  console.log("loading")
   const [formData, setFormData] = useState<Listing>({
     id: "",
     category: "ev",
