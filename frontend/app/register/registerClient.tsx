@@ -123,7 +123,7 @@ function RegisterForm() {
 
         <div className="text-center mt-3">
           <small>
-            Zaten hesabınız var mı? <a href="#">Giriş yap</a>
+            Zaten hesabınız var mı? <a href="/login">Giriş yap</a>
           </small>
         </div>
       </Card>

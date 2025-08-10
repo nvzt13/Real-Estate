@@ -16,16 +16,15 @@ interface UserState {
   isLoggedIn: boolean;
 }
 
+ const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+
 const initialState: UserState = {
   user: null,
-  accessToken:
-    typeof window !== "undefined" ? localStorage.getItem("accessToken") : null,
+  accessToken: token,
   loading: false,
-  isLoggedIn:
-    typeof window !== "undefined"
-      ? !!localStorage.getItem("accessToken")
-      : false,
+  isLoggedIn: false
 };
+
 
 // Kullanıcı kayıt işlemi
 export const createUserAsync = createAsyncThunk(
@@ -94,7 +93,40 @@ export const loginUserAsync = createAsyncThunk(
     }
   }
 );
+ 
+// Toggle faworite 
+export const toggleFavoriteAsync = createAsyncThunk(
+  "user/toggleFavorite",
+  async (userId: number, thunkAPI) => {
+    try {
+      const state = thunkAPI.getState() as { users: UserState };
+      const token = `${state.users.accessToken}`;
+      console.log("Token:", token);
+      const response = await fetch(`http://localhost:8000/api/users/6/toggle_favorite/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + token,
+        },
+        body: JSON.stringify({ listing_id : userId }),
+      });
 
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Favori durumu güncellenirken hata:", errorData);
+        return thunkAPI.rejectWithValue(errorData);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error("Favori durumu güncellenirken hata:", error);
+      return thunkAPI.rejectWithValue("Bir hata oluştu");
+    }
+  }
+);
+
+// userSlice 
 const userSlice = createSlice({
   name: "user",
   initialState,
@@ -107,9 +139,14 @@ const userSlice = createSlice({
       localStorage.removeItem("refreshToken");
       toast.success("Çıkış yapıldı.");
     },
+    setIsLoggin:(state, action) => {
+      state.accessToken = action.payload;
+      state.isLoggedIn = true; 
+    }
   },
   extraReducers: (builder) => {
     builder
+    // Kullanıcıları çekme işlemi
       .addCase(createUserAsync.pending, (state) => {
         state.loading = true;
       })
@@ -117,7 +154,7 @@ const userSlice = createSlice({
         createUserAsync.fulfilled,
         (state, action: PayloadAction<User>) => {
           state.loading = false;
-          state.users.push(action.payload);
+          state.user = action.payload;
         }
       )
       .addCase(
@@ -126,22 +163,52 @@ const userSlice = createSlice({
           state.loading = false;
         }
       )
+      // Login işlemi
+      .addCase(
+        loginUserAsync.pending,
+        (state) => {
+        state.loading = true;
+      }
+     )
       .addCase(
         loginUserAsync.fulfilled,
         (state, action: PayloadAction<any>) => {
           state.loading = false;
           state.accessToken = action.payload.accessToken;
           state.isLoggedIn = true;
-          state.user = {
-            name: "",
-            lastName: "",
-            email: action.payload.email,
-            password: "",
-          };
         }
-      );
+      )
+      .addCase(
+        loginUserAsync.rejected,
+        (state, action: PayloadAction<any>) => {
+          state.loading = false;
+          state.isLoggedIn = false;
+          state.accessToken = null;
+        }
+      )
+      // faworite işlemleri
+      .addCase(
+        toggleFavoriteAsync.pending,
+        (state) => {
+          state.loading = true;
+        }
+      )
+      .addCase(
+        toggleFavoriteAsync.fulfilled,
+        (state) => {
+          state.loading = false;
+          toast.success("Favori durumu güncellendi.");
+        }
+      )
+      .addCase(
+        toggleFavoriteAsync.rejected,
+        (state) => {
+          state.loading = false;
+          toast.error("Favori durumu güncellenemedi.");
+        }
+      )
   },
 });
 
 export default userSlice.reducer;
-export const { logout } = userSlice.actions;
+export const { logout, setIsLoggin } = userSlice.actions;

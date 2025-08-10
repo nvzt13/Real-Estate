@@ -1,10 +1,11 @@
 "use client";
-import React, { use } from "react";
+import React from "react";
 import Link from "next/link";
-import { Container, Navbar, Nav, Button, Offcanvas, Dropdown, Image as RBImage } from "react-bootstrap";
+import { Container, Navbar, Nav, Offcanvas, Dropdown } from "react-bootstrap";
 import Image from "next/image";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { logout } from "@/lib/slice/userSlice";
+
 function Header() {
   const login = useAppSelector((state) => state.users.isLoggedIn);
   const dispatch = useAppDispatch();
@@ -62,22 +63,21 @@ function Header() {
                     Favoriler
                   </Dropdown.Item>
                   <Dropdown.Divider />
-                  <Button variant="danger" className="w-100 mt-2" onClick={() => dispatch(logout()) }>
+                  <button
+                    className="btn btn-danger w-100 mt-2"
+                    onClick={() => dispatch(logout())}
+                  >
                     Çıkış Yap
-                  </Button>
+                  </button>
                 </Dropdown.Menu>
               </Dropdown>
             ) : (
               <Nav className="d-flex gap-2 mt-3">
-                <Link href="/login" passHref>
-                  <Button variant="outline-primary" className="me-2">
-                    Giriş Yap
-                  </Button>
+                <Link href="/login" className="btn btn-outline-primary me-2">
+                  Giriş Yap
                 </Link>
-                <Link href="/register" passHref>
-                  <Button style={{ backgroundColor: "#4318D1" }}>
-                    Kayıt Ol
-                  </Button>
+                <Link href="/register" className="btn" style={{ backgroundColor: "#4318D1", color: "white" }}>
+                  Kayıt Ol
                 </Link>
               </Nav>
             )}

@@ -29,12 +29,10 @@ function LoginForm() {
   dispatch(loginUserAsync({ email, password }))
     .then(() => {
       const token = localStorage.getItem("accessToken");
-      console.log("Login sonrası token:", token);
       if (token) {
         try {
           const decoded: DecodedToken = jwtDecode(token);
           setUserId(decoded.id);
-          console.log("Decoded user ID:", decoded.id);
         } catch (error) {
           console.error("Token çözümlenemedi", error);
         }
@@ -49,12 +47,10 @@ function LoginForm() {
   // Token varsa decode et
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
-    console.log(token)
     if (token) {
       try {
         const decoded: DecodedToken = jwtDecode(token);
         setUserId(decoded.id);
-        console.log("Decoded user ID:", decoded.id);
       } catch (error) {
         console.error("Token çözümlenemedi", error);
       }

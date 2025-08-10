@@ -7,6 +7,7 @@ import StoreProvider from "./StoreProvider";
 import FillReduxStore from "@/components/FillReduxStore";
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import "@/app/globals.css";
 export const metadata = {
   title: "Villa Agency",
   description: "Real Estate App",
