@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { fetchListings } from "@/lib/slice/listingSlice";
 import { AppDispatch } from "@/lib/store";
-import { setIsLoggin } from "@/lib/slice/userSlice";
+import { setIsLoggin, fetchUserFavoritesAsync} from "@/lib/slice/userSlice";
 
 const FillReduxStore = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -14,10 +14,12 @@ const FillReduxStore = () => {
       dispatch(setIsLoggin(token));
     }
     dispatch(fetchListings());
+    
   }, [dispatch]);
   
   return (
     <div>
+      <button onClick={() => dispatch(fetchUserFavoritesAsync(6))}>test</button>
     </div>
   );
 };

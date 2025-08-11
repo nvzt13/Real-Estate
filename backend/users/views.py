@@ -38,10 +38,12 @@ class UserViewSet(viewsets.ModelViewSet):
         else:
             user.favorites.add(listing)
             return Response({'message': 'Favorilere eklendi.'})
+            
+            
     @action(detail=True, methods=['get'], permission_classes=[IsAuthenticated])
     def favorites(self, request, pk=None):
         user = self.get_object()
-        favorites = user.favorites.all()  # ManyToMany ilişkisi üzerinden favoriler
+        favorites = user.favorites.all()
         from listings.serializers import ListingSerializer
         serializer = ListingSerializer(favorites, many=True)
         return Response(serializer.data)

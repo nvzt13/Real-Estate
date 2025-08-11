@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
+import { Listing } from "@/types/types";
 
 export interface User {
   id?: string;
@@ -14,15 +15,15 @@ interface UserState {
   accessToken: string | null;
   loading: boolean;
   isLoggedIn: boolean;
+  favorites: Listing[]
 }
-
- const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
 
 const initialState: UserState = {
   user: null,
-  accessToken: token,
+  accessToken: null,
   loading: false,
-  isLoggedIn: false
+  isLoggedIn: false,
+  favorites: []
 };
 
 
@@ -126,6 +127,41 @@ export const toggleFavoriteAsync = createAsyncThunk(
   }
 );
 
+// fetch user favorites list
+export const fetchUserFavoritesAsync = createAsyncThunk(
+  "user/favorites",
+  async (userId: number, thunkAPI) => {
+    try {
+      const state = thunkAPI.getState() as { users: UserState };
+      const token = state.users.accessToken;
+
+      console.log("Fetching favorites for user:", userId);
+      console.log("Token:", token);
+
+      const response = await fetch(`http://localhost:8000/api/users/${userId}/favorites/`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer " + token,
+        },
+      });
+
+      if (!response.ok) {
+        toast.error("Favoriler getirilirken bir hata oluştu!");
+        const errorData = await response.json();
+        return thunkAPI.rejectWithValue(errorData);
+      }
+
+      const data = await response.json();
+      console.log("Favoriler:", data);
+      return data; // Bunu reducer içinde yakalayabilirsin
+    } catch (error) {
+      console.error("Favoriler getirilirken hata:", error);
+      return thunkAPI.rejectWithValue("Bir hata oluştu");
+    }
+  }
+);
+
 // userSlice 
 const userSlice = createSlice({
   name: "user",
@@ -205,6 +241,19 @@ const userSlice = createSlice({
         (state) => {
           state.loading = false;
           toast.error("Favori durumu güncellenemedi.");
+        }
+      )
+      .addCase(fetchUserFavoritesAsync.pending, (state) => {
+         state.loading = true;
+        }
+      )
+      .addCase(fetchUserFavoritesAsync.fulfilled, (state, action: PayloadAction<Listing[]>) => {
+        state.loading = false;
+        state.favorites = action.payload;
+        }
+      )
+      .addCase(fetchUserFavoritesAsync.rejected, (state) => {
+        state.loading = false;
         }
       )
   },
