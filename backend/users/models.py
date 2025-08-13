@@ -44,3 +44,4 @@ class Message(models.Model):
 
     def __str__(self):
         return f"{'Admin' if self.is_admin else self.sender.email}: {self.content[:20]}"
+

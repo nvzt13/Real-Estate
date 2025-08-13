@@ -2,6 +2,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import listingReducer from "./slice/listingSlice";
 import userReducer from "./slice/userSlice";
+import messageReducer from "./slice/messageSlice";
 
 
 export const makeStore = () => {
@@ -9,6 +10,7 @@ export const makeStore = () => {
      reducer: {
     listings: listingReducer,
     users: userReducer,
+    messages: messageReducer, // Ensure you import and add the messageReducer
   },
   })
 }

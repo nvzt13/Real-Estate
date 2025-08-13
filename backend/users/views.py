@@ -1,7 +1,9 @@
 from listings.models import Listing
-from .models import CustomUser
-from .serializers import CustomUserSerializer
-from .serializers import MyTokenObtainPairSerializer
+
+from .models import CustomUser, Message
+
+from .serializers import CustomUserSerializer, MessageSerializer, MyTokenObtainPairSerializer
+
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
@@ -11,6 +13,7 @@ from rest_framework.response import Response
 import logging
 
 logger = logging.getLogger(__name__)
+
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
@@ -40,13 +43,27 @@ class UserViewSet(viewsets.ModelViewSet):
             return Response({'message': 'Favorilere eklendi.'})
             
             
-    @action(detail=True, methods=['get'], permission_classes=[IsAuthenticated])
-    def favorites(self, request, pk=None):
-        user = self.get_object()
+    @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated])
+    def favorites(self, request):
+        user = request.user
         favorites = user.favorites.all()
         from listings.serializers import ListingSerializer
         serializer = ListingSerializer(favorites, many=True)
         return Response(serializer.data)
 
+
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
+
+class MessageViewSet(viewsets.ModelViewSet):
+    queryset = Message.objects.all()
+    serializer_class = MessageSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return Message.objects.filter(sender=user) | Message.objects.filter(is_admin=True)
+    
+    def perform_create(self, serializer):
+        is_admin = self.request.user.is_staff
+        serializer.save(sender=self.request.user, is_admin=is_admin)

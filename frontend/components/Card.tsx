@@ -4,7 +4,7 @@ import { Card, Badge, Button } from "react-bootstrap";
 import { useRouter } from "next/navigation";
 import { Listing } from "@/types/types";
 import Link from "next/link";
-import { useAppDispatch } from "@/lib/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { toggleFavoriteAsync } from "@/lib/slice/userSlice";
 
 interface GenericCardProps {
@@ -13,11 +13,12 @@ interface GenericCardProps {
 
 function GenericCard({ data }: GenericCardProps) {
   const dispatch = useAppDispatch();
-  const getBackgroundColor = (category : "Ev" | "Araba" | "Arsa") => {
+  const favorites = useAppSelector((state) => state.users.favorites);
+  const getBackgroundColor = (category : "Ev" | "araba" | "Arsa") => {
     switch (category) {
       case "Ev":
         return "success";
-      case "Araba":
+      case "araba":
         return "danger";
       case "Arsa":
         return "warning";
@@ -45,7 +46,11 @@ function GenericCard({ data }: GenericCardProps) {
           cursor: "pointer",
         }}
       >
-        <button onClick={() => dispatch(toggleFavoriteAsync(44))}>🤍</button>
+        <button className="rounded-5 p-1" onClick={() => dispatch(toggleFavoriteAsync(data.id))}>
+          {
+            favorites.some((item) => item.id === data.id) ? "❤️" : "🤍"
+          }
+          </button>
       </div>
 
       <Card.Img
@@ -72,7 +77,7 @@ function GenericCard({ data }: GenericCardProps) {
           >
             ₺{data.price}
           </div>
-          <Badge bg={getBackgroundColor(data.category)}>{data.category}</Badge>
+          <Badge bg={getBackgroundColor(data.category as "Ev" | "araba" | "Arsa")}>{data.category}</Badge>
         </div>
 
         <div

@@ -28,7 +28,7 @@ export interface LandSpecs {
 
 // types.ts
 export type Listing = {
-  id: string;
+  id: number;
   category: 'araba' | 'ev' | 'arsa';
   type: "Satılık" | "Kiralık",
   title: string;
@@ -39,3 +39,18 @@ export type Listing = {
   images: string[];
   coordinates: number[] | null; // Nullable for listings without coordinates
 };
+
+export interface Message {
+  id: number;
+  sender: string;
+  is_admin: boolean;
+  created_at: string;
+  content: string;
+}
+export interface User {
+  id?: string;
+  name: string;
+  lastName: string;
+  email: string;
+  password: string;
+}

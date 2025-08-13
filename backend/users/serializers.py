@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import CustomUser
+from .models import CustomUser, Message
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 
@@ -35,3 +35,8 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         attrs['username'] = attrs.get('email')
         return super().validate(attrs)
     
+
+class MessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Message
+        fields = "__all__"

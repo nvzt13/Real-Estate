@@ -19,15 +19,16 @@ from django.urls import path, include  # include burada olmalı
 
 from rest_framework.routers import DefaultRouter
 from listings.views import ListingViewSet
-from users.views import UserViewSet, MyTokenObtainPairView
+from users.views import UserViewSet, MyTokenObtainPairView, MessageViewSet
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
 
-router = DefaultRouter()
+router = DefaultRouter() 
 router.register(r'listings', ListingViewSet)
-router.register(r'users', UserViewSet)
+router.register(r'users', UserViewSet)  
+router.register(r'messages', MessageViewSet)  
 
 urlpatterns = [
     path('admin/', admin.site.urls),

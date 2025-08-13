@@ -3,7 +3,8 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { fetchListings } from "@/lib/slice/listingSlice";
 import { AppDispatch } from "@/lib/store";
-import { setIsLoggin, fetchUserFavoritesAsync} from "@/lib/slice/userSlice";
+import { setIsLoggin, fetchUserFavoritesAsync, toggleLoading, fetchAllUsersAsync} from "@/lib/slice/userSlice";
+import { fetchMessages } from "@/lib/slice/messageSlice";
 
 const FillReduxStore = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -12,14 +13,16 @@ const FillReduxStore = () => {
     const token = localStorage.getItem("accessToken");
     if (token) {
       dispatch(setIsLoggin(token));
+      dispatch(fetchMessages(token));
     }
     dispatch(fetchListings());
-    
+    dispatch(fetchUserFavoritesAsync(3));
+    dispatch(fetchAllUsersAsync());
+
   }, [dispatch]);
   
   return (
     <div>
-      <button onClick={() => dispatch(fetchUserFavoritesAsync(6))}>test</button>
     </div>
   );
 };
