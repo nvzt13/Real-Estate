@@ -1,7 +1,7 @@
 "use client";
-import { useAppSelector } from "@/lib/hooks";
-// ChatApp.js
-import React, { useState } from "react";
+import { useAppSelector, useAppDispatch } from "@/lib/hooks";
+import { fetchMessagesByUserId } from "@/lib/slice/messageSlice";
+import React, { useState, useEffect } from "react";
 import {
   Container,
   Row,
@@ -12,17 +12,31 @@ import {
   Card,
 } from "react-bootstrap";
 
-
-
 export default function ChatApp() {
   const [inputText, setInputText] = useState("");
-  const messagesData = useAppSelector((state) => state.messages.list);
+  const messagesData = useAppSelector((state) => state.messages.singleUserMessage);
+  console.log(messagesData)
+  const dispatch = useAppDispatch();
   const users = useAppSelector((state) => state.users.users);
-  console.log("Users:", users);
-  if(!users || users.length === 0) {
+
+  const [selectedUser, setSelectedUser] = useState(null);
+
+  useEffect(() => {
+    if (users && users.length > 0 && !selectedUser) {
+      setSelectedUser(users[0]); // İlk kullanıcıyı seç
+    }
+  }, [users]);
+
+  useEffect(() => {
+    if (selectedUser) {
+      dispatch(fetchMessagesByUserId(selectedUser.id));
+    }
+  }, [selectedUser, dispatch]);
+
+  if (!users || users.length === 0 || !selectedUser) {
     return <div>Loading...</div>;
   }
-  const [selectedUser, setSelectedUser] = useState(users[0]);
+
   const handleSend = () => {
     // Buraya mesaj gönderme işlemi eklenebilir
     setInputText("");

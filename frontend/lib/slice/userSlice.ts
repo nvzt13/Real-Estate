@@ -1,7 +1,7 @@
 import { addListing } from "./listingSlice";
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
-import { Listing } from "@/types/types";
+import { Listing, User} from "@/types/types";
 import { stat } from "fs";
 
 
@@ -158,6 +158,36 @@ export const fetchAllUsersAsync = createAsyncThunk(
   }
 );
 
+// Kullanıcı bilgilerini getir
+export const fetchUserAsync = createAsyncThunk(
+  "user/fetchUser",
+  async (_, thunkAPI) => {
+    try {
+      const state = thunkAPI.getState() as { user: UserState };
+      const token = state.users.accessToken || localStorage.getItem("accessToken");
+
+      if (!token) {
+        return thunkAPI.rejectWithValue("Token bulunamadı");
+      }
+
+      const response = await fetch("http://localhost:8000/api/users/me/", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        },
+      });
+
+      if (!response.ok) {
+        return thunkAPI.rejectWithValue(await response.json());
+      }
+
+      return await response.json(); // burada user bilgisi döner (ör. {id, name, is_admin})
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
 // Slice
 const userSlice = createSlice({
   name: "user",
@@ -235,7 +265,18 @@ const userSlice = createSlice({
       })
       .addCase(fetchAllUsersAsync.pending, (state) => {
         state.loading = true;
-      });
+      })
+      .addCase(fetchUserAsync.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchUserAsync.fulfilled, (state, action: PayloadAction<User>) => {
+        state.loading = false;
+        state.user = action.payload;
+      })
+      .addCase(fetchUserAsync.rejected, (state) => {
+        state.loading = false;
+        state.user = null;
+      })
   },
 });
 
