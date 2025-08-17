@@ -8,6 +8,20 @@ import { useAppSelector } from "@/lib/hooks";
 export default function AdminPanel() {
   const [activeTab, setActiveTab] = useState("dashboard");
   const listings = useAppSelector((state) => state.listings.listings);
+  const currentUser = useAppSelector((state) => state.users.currentUser);
+  const isAdmin = currentUser?.is_staff;
+  if (!isAdmin) {
+    return (
+      <Container className="py-4">
+        <Row>
+          <Col>
+            <h3 className="fw-bold">Yönetici Paneli</h3>
+            <p>Bu sayfaya erişim izniniz yok.</p>
+          </Col>
+        </Row>
+      </Container>
+    );
+  }
   return (
     <Container className="py-4">
       <Row className="mb-4 align-items-center">

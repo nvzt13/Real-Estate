@@ -1,24 +1,20 @@
-import { addListing } from "./listingSlice";
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
-import { Listing, User} from "@/types/types";
-import { stat } from "fs";
-
+import { Listing, User } from "@/types/types";
+import { fetchMessages } from "./messageSlice";
 
 interface UserState {
-  user: User | null;
+  currentUser: User | null;
   accessToken: string | null;
   loading: boolean;
-  isLoggedIn: boolean;
   favorites: Listing[];
   users: User[];
 }
 
 const initialState: UserState = {
-  user: null,
+  currentUser: null,
   accessToken: null,
   loading: false,
-  isLoggedIn: false,
   favorites: [],
   users: [],
 };
@@ -71,8 +67,23 @@ export const loginUserAsync = createAsyncThunk(
 
       const data = await response.json();
       toast.success("Giriş başarılı!");
+
+      // Token'ları sakla
       localStorage.setItem("accessToken", data.access);
       localStorage.setItem("refreshToken", data.refresh);
+
+      // Kullanıcıyı çek → unwrap ile veriyi al
+      const user = await thunkAPI.dispatch(fetchUserAsync()).unwrap();
+
+      if (user) {
+        thunkAPI.dispatch(setLogin(user));
+        thunkAPI.dispatch(fetchMessages());
+        thunkAPI.dispatch(fetchUserFavoritesAsync());
+
+        if (user.is_staff) {
+          thunkAPI.dispatch(fetchAllUsersAsync());
+        }
+      }
 
       return { accessToken: data.access, refreshToken: data.refresh };
     } catch (error) {
@@ -81,6 +92,7 @@ export const loginUserAsync = createAsyncThunk(
     }
   }
 );
+
 
 // Favori toggle (Optimistic Update)
 export const toggleFavoriteAsync = createAsyncThunk(
@@ -113,10 +125,9 @@ export const toggleFavoriteAsync = createAsyncThunk(
 // Favoriler listesi çek
 export const fetchUserFavoritesAsync = createAsyncThunk(
   "user/favorites",
-  async (userId: number, thunkAPI) => {
+  async (_, thunkAPI) => {
     const state = thunkAPI.getState() as { users: UserState };
-    const token = state.users.accessToken;
-
+    const token = `${state.users.accessToken}`;
     const response = await fetch(`http://localhost:8000/api/users/favorites/`, {
       method: "GET",
       headers: {
@@ -162,32 +173,32 @@ export const fetchAllUsersAsync = createAsyncThunk(
 export const fetchUserAsync = createAsyncThunk(
   "user/fetchUser",
   async (_, thunkAPI) => {
+    const state = thunkAPI.getState() as { users: UserState };
+    const token =
+      state.users.accessToken || localStorage.getItem("accessToken");
+
+    if (!token) {
+      return thunkAPI.rejectWithValue("Token bulunamadı");
+    }
     try {
-      const state = thunkAPI.getState() as { user: UserState };
-      const token = state.users.accessToken || localStorage.getItem("accessToken");
-
-      if (!token) {
-        return thunkAPI.rejectWithValue("Token bulunamadı");
-      }
-
       const response = await fetch("http://localhost:8000/api/users/me/", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
+          Authorization: `Bearer ${token}`,
         },
       });
-
       if (!response.ok) {
         return thunkAPI.rejectWithValue(await response.json());
       }
 
-      return await response.json(); // burada user bilgisi döner (ör. {id, name, is_admin})
+      return await response.json(); // {id, name, is_admin, ...}
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
   }
 );
+
 // Slice
 const userSlice = createSlice({
   name: "user",
@@ -195,15 +206,15 @@ const userSlice = createSlice({
   reducers: {
     logout: (state) => {
       state.accessToken = null;
-      state.isLoggedIn = false;
-      state.user = null;
+      state.currentUser = null;
       localStorage.removeItem("accessToken");
       localStorage.removeItem("refreshToken");
       toast.success("Çıkış yapıldı.");
     },
-    setIsLoggin: (state, action) => {
-      state.accessToken = action.payload;
-      state.isLoggedIn = true;
+    setLogin: (state, action) => {
+      const token = localStorage.getItem("accessToken");
+      state.accessToken = token;
+      state.currentUser = action.payload || null; // varsa user bilgisini de koy
     },
     toggleLoading: (state) => {
       state.loading = !state.loading;
@@ -219,7 +230,7 @@ const userSlice = createSlice({
         createUserAsync.fulfilled,
         (state, action: PayloadAction<User>) => {
           state.loading = false;
-          state.user = action.payload;
+          state.currentUser = action.payload;
         }
       )
       .addCase(createUserAsync.rejected, (state) => {
@@ -233,11 +244,9 @@ const userSlice = createSlice({
       .addCase(loginUserAsync.fulfilled, (state, action) => {
         state.loading = false;
         state.accessToken = action.payload.accessToken;
-        state.isLoggedIn = true;
       })
       .addCase(loginUserAsync.rejected, (state) => {
         state.loading = false;
-        state.isLoggedIn = false;
         state.accessToken = null;
       })
 
@@ -259,7 +268,7 @@ const userSlice = createSlice({
         state.users = action.payload;
         state.loading = false;
       })
-      .addCase(fetchAllUsersAsync.rejected, (state, action) => {
+      .addCase(fetchAllUsersAsync.rejected, (state) => {
         toast.error("Kullanıcılar alınırken hata oluştu!");
         state.loading = false;
       })
@@ -269,16 +278,19 @@ const userSlice = createSlice({
       .addCase(fetchUserAsync.pending, (state) => {
         state.loading = true;
       })
-      .addCase(fetchUserAsync.fulfilled, (state, action: PayloadAction<User>) => {
-        state.loading = false;
-        state.user = action.payload;
-      })
+      .addCase(
+        fetchUserAsync.fulfilled,
+        (state, action: PayloadAction<User>) => {
+          state.loading = false;
+          state.currentUser = action.payload;
+        }
+      )
       .addCase(fetchUserAsync.rejected, (state) => {
         state.loading = false;
-        state.user = null;
-      })
+        state.currentUser = null;
+      });
   },
 });
 
-export const { logout, setIsLoggin, toggleLoading } = userSlice.actions;
+export const { logout, setLogin, toggleLoading } = userSlice.actions;
 export default userSlice.reducer;

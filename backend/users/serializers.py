@@ -6,7 +6,7 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ('id', 'name', 'lastName', 'email', 'password')
+        fields = ('id', 'name', 'lastName', 'email', 'password', 'is_staff', 'favorites')
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):

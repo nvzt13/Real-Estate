@@ -1,6 +1,5 @@
 'use client';
 
-import { useAppSelector } from '@/lib/hooks';
 import dynamic from 'next/dynamic';
 
 // Harita bileşeni dinamik ve sadece tarayıcıda yüklenecek

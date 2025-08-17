@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 import { Card, Badge, Button } from "react-bootstrap";
-import { useRouter } from "next/navigation";
 import { Listing } from "@/types/types";
 import Link from "next/link";
 import { useAppDispatch, useAppSelector } from "@/lib/hooks";
@@ -14,7 +13,7 @@ interface GenericCardProps {
 function GenericCard({ data }: GenericCardProps) {
   const dispatch = useAppDispatch();
   const favorites = useAppSelector((state) => state.users.favorites);
-  const getBackgroundColor = (category : "Ev" | "araba" | "Arsa") => {
+  const getBackgroundColor = (category: "Ev" | "araba" | "Arsa") => {
     switch (category) {
       case "Ev":
         return "success";
@@ -46,16 +45,21 @@ function GenericCard({ data }: GenericCardProps) {
           cursor: "pointer",
         }}
       >
-        <button className="rounded-5 p-1" onClick={() => dispatch(toggleFavoriteAsync(data.id))}>
-          {
-            favorites.some((item) => item.id === data.id) ? "❤️" : "🤍"
-          }
-          </button>
+        <button
+          className="rounded-5 p-1"
+          onClick={() => dispatch(toggleFavoriteAsync(data.id))}
+        >
+          {favorites.some((item) => item.id === data.id) ? "❤️" : "🤍"}
+        </button>
       </div>
 
       <Card.Img
         variant="top"
-        src={data?.images[0]}
+        src={
+          data?.images && data.images.length > 0
+            ? data.images[0]
+            : "/placeholder.jpg"
+        }
         style={{ height: "200px", objectFit: "cover" }}
       />
 
@@ -77,7 +81,11 @@ function GenericCard({ data }: GenericCardProps) {
           >
             ₺{data.price}
           </div>
-          <Badge bg={getBackgroundColor(data.category as "Ev" | "araba" | "Arsa")}>{data.category}</Badge>
+          <Badge
+            bg={getBackgroundColor(data.category as "Ev" | "araba" | "Arsa")}
+          >
+            {data.category}
+          </Badge>
         </div>
 
         <div
@@ -86,17 +94,11 @@ function GenericCard({ data }: GenericCardProps) {
             justifyContent: "space-evenly",
           }}
         >
-          <Link
-            href={`/listing-detail/${data.id}`}
-            className="mt-3"
-          >
+          <Link href={`/listing-detail/${data.id}`} className="mt-3">
             <Button variant="primary">Detayları Gör</Button>
           </Link>
 
-          <Link
-            href={`/map/${data.id}`}
-            className="mt-3"
-          >
+          <Link href={`/map/${data.id}`} className="mt-3">
             <Button variant="outline-primary">Haritada Göster</Button>
           </Link>
         </div>

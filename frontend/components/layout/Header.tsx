@@ -7,10 +7,9 @@ import { useAppDispatch, useAppSelector } from "@/lib/hooks";
 import { logout } from "@/lib/slice/userSlice";
 
 function Header() {
-  const login = useAppSelector((state) => state.users.isLoggedIn);
+  const currentUser = useAppSelector((state) => state.users.currentUser);
   const dispatch = useAppDispatch();
   const loading = useAppSelector((state) => state.users.loading);
-  console.log(loading)
   return (
     <Navbar expand="md" className="shadow-sm position-relative" style={{ zIndex: 1040 }}>
       <Container style={{ maxWidth: "1295px", height: "64px" }}>
@@ -33,10 +32,7 @@ function Header() {
               <Link href="/" className="nav-link" style={{ lineHeight: "25px" }}>
                 Ana Sayfa
               </Link>
-              <Link href="/map" className="nav-link">
-                Harita
-              </Link>
-              <Link href="/fawories" className="nav-link">
+              <Link href="/favorites" className="nav-link">
                 Favoriler
               </Link>
               <Link href="/admin" className="nav-link">
@@ -49,7 +45,7 @@ function Header() {
                 <Spinner animation="border" size="sm" className="me-2" />
                 <span>Yükleniyor...</span>
               </div>
-            ) : login ? (
+            ) : currentUser ? (
               <Dropdown align="end">
                 <Dropdown.Toggle variant="light" className="p-0 border-0 bg-transparent">
                   <Image
@@ -65,7 +61,7 @@ function Header() {
                   <Dropdown.Item as={Link} href="/message">
                     Mesajlar
                   </Dropdown.Item>
-                  <Dropdown.Item as={Link} href="/fawories">
+                  <Dropdown.Item as={Link} href="/favorites">
                     Favoriler
                   </Dropdown.Item>
                   <Dropdown.Divider />

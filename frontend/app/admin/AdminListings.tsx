@@ -1,17 +1,18 @@
 "use client";
 
 import React, { useState } from "react";
-import { Table, Button, Form, Row, Col, Badge } from "react-bootstrap";
+import { Table, Button, Form, Badge } from "react-bootstrap";
 import { FaTrash, FaEdit, FaSave, FaTimes } from "react-icons/fa";
 import { useAppSelector, useAppDispatch } from "@/lib/hooks";
 import { updateListing } from "@/lib/slice/listingSlice";
 import {deleleteListing} from "@/lib/slice/listingSlice"
+import { Listing } from "@/types/types";
 const AdminPanel = () => {
   const listings = useAppSelector((state) => state.listings.listings);
   const dispatch = useAppDispatch();
 
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [editedListing, setEditedListing] = useState<any>({});
+  const [editedListing, setEditedListing] = useState<Listing>({});
 
   const startEditing = (listing: any) => {
     setEditingId(listing.id);
@@ -25,7 +26,7 @@ const AdminPanel = () => {
 
   const handleSave = () => {
     console.log("Güncellenen veri:", editedListing);
-    dispatch(updateListing(editedListing));
+    dispatch(updateListing(editedListing) || {}); // Güncelleme işlemi için dispatch çağrısı
     // dispatch(updateListing(editedListing)) gibi bir işlem yapılabilir
     setEditingId(null);
   };
@@ -33,24 +34,6 @@ const AdminPanel = () => {
   const handleChange = (field: string, value: string) => {
     setEditedListing((prev: any) => ({ ...prev, [field]: value }));
   };
-
-  const getBadge = (status: string) => {
-    switch (status) {
-      case "Aktif":
-        return <Badge bg="success">Aktif</Badge>;
-      case "Beklemede":
-        return (
-          <Badge bg="warning" text="dark">
-            Beklemede
-          </Badge>
-        );
-      case "Pasif":
-        return <Badge bg="secondary">Pasif</Badge>;
-      default:
-        return null;
-    }
-  };
-
 
   return (
     <div className="p-4">

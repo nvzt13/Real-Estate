@@ -1,5 +1,6 @@
 "use client";
 import { useAppSelector } from '@/lib/hooks';
+import Image from 'next/image';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Button, Badge } from 'react-bootstrap';
@@ -31,8 +32,8 @@ function ListingDetailPage({ id }: { id: string }) {
 
       <Row className="g-4">
         <Col lg={6}>
-          <img
-            src={mainImage}
+          <Image
+            src={mainImage || '/placeholder-image.png'}
             alt="Main"
             className="img-fluid mb-3 rounded"
             style={{
@@ -45,7 +46,7 @@ function ListingDetailPage({ id }: { id: string }) {
 
           <div className="d-flex flex-wrap gap-2">
             {selectedListing.images.map((img, i) => (
-              <img
+              <Image
                 key={i}
                 src={img}
                 alt={`Foto ${i + 1}`}
@@ -68,7 +69,7 @@ function ListingDetailPage({ id }: { id: string }) {
           <h4>{selectedListing.title}</h4>
           <div className="text-muted">{selectedListing.location}</div>
           <h3 className="mt-2" style={{ color: '#5e1ee8' }}>
-            ₺{selectedListing.price.toLocaleString('tr-TR')}
+            ₺{selectedListing.price.toLocaleString('tr-TR') ||  0 }
           </h3>
 
           <h5 className="fw-bold mt-4">Özellikler</h5>

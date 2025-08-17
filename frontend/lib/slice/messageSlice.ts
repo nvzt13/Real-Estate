@@ -1,23 +1,22 @@
-import { Message } from "@/types/types";
+import { Message, MessageType } from "@/types/types";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { toast } from "react-toastify";
 
 interface MessageState {
-  list: Message[]; 
-  singleUserMessage: Message[];
+  userMessages: Message[]; 
+  singleUserMessages: Message[];
   loading: boolean;
 }
 
 const initialState: MessageState = {
-  list: [],
-  singleUserMessage: [],
+  userMessages: [],
+  singleUserMessages: [],
   loading: false,
 };
 // fetch  messages for user
-export const fetchMessages = createAsyncThunk<Message[], string>(
+export const fetchMessages = createAsyncThunk(
   "messages/fetchMessages",
-  async (token: string) => {
-    
+  async () => {
+    const token = localStorage.getItem("accessToken");
     const res = await fetch("http://localhost:8000/api/messages/", {
       headers: { Authorization: `Bearer ${token}` }
     });
@@ -31,10 +30,10 @@ export const fetchMessages = createAsyncThunk<Message[], string>(
 );
 
 // fetch messages for admin
-export const fetchMessagesByUserId = createAsyncThunk<Message[], string>(
+export const fetchMessagesByUserId = createAsyncThunk(
   "messages/userMessages",
-  async (userId) => {
-    const response = await fetch(`http://localhost:8000/api/users/${userId}/messages`);
+  async (userId: number) => {
+    const response = await fetch(`http://localhost:8000/api/users/${userId}/messages/`);
     if (!response.ok) {
       throw new Error("Kullanıcının mesajları getirilemedi");
     }
@@ -44,12 +43,9 @@ export const fetchMessagesByUserId = createAsyncThunk<Message[], string>(
 );
 
 // send messages
-export const sendMessage = createAsyncThunk("message/sendMessage", async (token) => {
-  console.log(token)
-  const message = {
-  "sender": 1,
-  "content": "Merhaba, bu 2. bir test mesajıdır."
-}
+export const sendMessage = createAsyncThunk("message/sendMessage", async (message: MessageType) => {
+
+  const token = localStorage.getItem("accessToken");
    try{
      const response = await fetch('http://localhost:8000/api/messages/', {
        method: "POST",
@@ -59,6 +55,11 @@ export const sendMessage = createAsyncThunk("message/sendMessage", async (token)
        },
         body: JSON.stringify(message),
      })
+      if (!response.ok) {
+        throw new Error("Mesaj gönderilemedi");
+      }
+      const data = await response.json();
+      return data;
    }
    catch(error) {
      console.log(error)
@@ -77,7 +78,7 @@ const messageSlice = createSlice({
       })
       .addCase(fetchMessages.fulfilled, (state, action) => {
         state.loading = false;
-        state.list = action.payload;
+        state.userMessages = action.payload;
       })
       .addCase(fetchMessages.rejected, (state) => {
         state.loading = false;
@@ -89,7 +90,7 @@ const messageSlice = createSlice({
       })
       .addCase(fetchMessagesByUserId.fulfilled, (state, action) => {
         state.loading = false;
-        state.singleUserMessage = action.payload;
+        state.singleUserMessages = action.payload;
       })
       .addCase(fetchMessagesByUserId.rejected, (state) => {
         state.loading = false;

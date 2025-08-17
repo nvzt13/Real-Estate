@@ -1,41 +1,38 @@
 "use client";
 import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/lib/store";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "@/lib/store";
 import { fetchListings } from "@/lib/slice/listingSlice";
-import { setIsLoggin, fetchUserAsync, fetchUserFavoritesAsync, fetchAllUsersAsync } from "@/lib/slice/userSlice";
-import { fetchMessages, sendMessage } from "@/lib/slice/messageSlice";
+import {
+  fetchUserAsync,
+  fetchUserFavoritesAsync,
+  fetchAllUsersAsync,
+  setLogin,
+} from "@/lib/slice/userSlice";
+import { fetchMessages } from "@/lib/slice/messageSlice";
 
 const FillReduxStore = () => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const { user, isLoggedIn } = useSelector((state: RootState) => state.users);
-
-    
   useEffect(() => {
-    dispatch(fetchListings());
-    const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
-
+    dispatch(fetchListings())
+    const token = localStorage.getItem("accessToken");
     if (!token) return;
-    dispatch(sendMessage(token))
-    dispatch(setIsLoggin(token));
 
-    dispatch(fetchUserAsync()).then((res: any) => {
-      if (res.payload) {
-        const isAdmin = res.payload.is_admin;
-        dispatch(fetchMessages(token));
-        dispatch(fetchUserFavoritesAsync(res.payload.id));
+    dispatch(fetchUserAsync())
+      .unwrap()
+      .then((user) => {
+        if (!user) return;
+        dispatch(setLogin(user));
+        dispatch(fetchMessages());
+        dispatch(fetchUserFavoritesAsync());
 
-        if (isAdmin) {
+        if (user.is_staff) {
           dispatch(fetchAllUsersAsync());
         }
-      }
-    });
+      });
   }, [dispatch]);
-  return (
-    <div>
-    </div>
-  );
+  return null; // This component does not render anything
 };
 
 export default FillReduxStore;

@@ -51,6 +51,19 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer = ListingSerializer(favorites, many=True)
         return Response(serializer.data)
 
+    @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated])
+    def me(self, request):
+        serializer = self.get_serializer(request.user)
+        return Response(serializer.data)
+    
+    @action(detail=True, methods=['get'])
+    def messages(self, request, pk=None
+    ):
+        user = self.get_object()
+        messages = Message.objects.filter(sender=user) | Message.objects.filter(is_admin=True)
+        serializer = MessageSerializer(messages, many=True)
+        return Response(serializer.data)
+    
 
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer

@@ -1,20 +1,13 @@
 "use client"
 import { useAppDispatch } from '@/lib/hooks';
 import { loginUserAsync } from '@/lib/slice/userSlice';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Button, Form, Card, Alert } from 'react-bootstrap';
-import { jwtDecode } from 'jwt-decode';
-
-interface DecodedToken {
-  id: string;
-  email: string;
-}
 
 function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showError, setShowError] = useState(false);
-  const [userId, setUserId] = useState<string | null>(null);
 
   const dispatch = useAppDispatch();
 
@@ -27,37 +20,11 @@ function LoginForm() {
   }
 
   dispatch(loginUserAsync({ email, password }))
-    .then(() => {
-      const token = localStorage.getItem("accessToken");
-      if (token) {
-        try {
-          const decoded: DecodedToken = jwtDecode(token);
-          setUserId(decoded.id);
-        } catch (error) {
-          console.error("Token çözümlenemedi", error);
-        }
-      } else {
-        console.log("Henüz token yok.");
-      }
-    });
-
+  setEmail("");
+  setPassword("");
   setShowError(false);
 };
 
-  // Token varsa decode et
-  useEffect(() => {
-    const token = localStorage.getItem("accessToken");
-    if (token) {
-      try {
-        const decoded: DecodedToken = jwtDecode(token);
-        setUserId(decoded.id);
-      } catch (error) {
-        console.error("Token çözümlenemedi", error);
-      }
-    } else {
-      console.log("Henüz token yok.");
-    }
-  }, [email, password]); // Bu kısımda farklı bir trigger koymak gerekebilir.
 
   return (
     <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
