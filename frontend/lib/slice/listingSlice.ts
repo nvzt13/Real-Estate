@@ -42,9 +42,14 @@ export const addListing = createAsyncThunk(
     toast.success("İlan başarılı bir şekilde eklendi!")
     return newListing;
     } catch (error) {
-      console.log(error)
-      toast.error(error.message)
-    }
+  console.log(error);
+
+  if (error instanceof Error) {
+    toast.error(error.message);
+  } else {
+    toast.error(String(error));
+  }
+}
   }
 );
 

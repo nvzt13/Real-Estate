@@ -3,6 +3,7 @@ import { useAppSelector, useAppDispatch } from "@/lib/hooks";
 import { fetchMessagesByUserId, sendMessage } from "@/lib/slice/messageSlice";
 import { User } from "@/types/types";
 import React, { useState, useEffect } from "react";
+import {Message} from '@/types/types'
 import {
   Container,
   Row,
@@ -39,14 +40,31 @@ export default function ChatApp() {
   }, [selectedUser, dispatch]);
   if (!currentUser) return <div>Unauthorized</div>;
 
-  const handleSend = () => {
-    dispatch(sendMessage({
-      "sender": currentUser?.id || 0,
-      "content": inputText
-    }))
-  };
 
   const isAdmin = currentUser.is_staff;
+  
+  const handleSend = () => {
+  if (!inputText.trim()) return;
+
+  let newMessage: Message;
+
+  if (isAdmin && selectedUser) {
+    // Admin -> User
+    newMessage = {
+      receiver: selectedUser.id, // seçilen kullanıcı
+      content: inputText,
+    };
+  } else {
+    // User -> Admin
+    newMessage = {
+      receiver: 1,            // admin id (hardcoded)
+      content: inputText,
+    };
+  }
+
+  dispatch(sendMessage(newMessage));
+  setInputText("");
+};
 
   if (!isAdmin) {
     return (
@@ -150,15 +168,15 @@ export default function ChatApp() {
                     key={idx}
                     className={`mb-3 d-flex ${
                       msg.is_admin
-                        ? "justify-content-start"
-                        : "justify-content-end"
+                        ? "justify-content-end"
+                        : "justify-content-start"
                     }`}
                   >
                     <div
                       className={`p-2 rounded ${
                         msg.is_admin
-                          ? "bg-light text-dark"
-                          : "bg-primary text-white"
+                          ? "bg-primary text-white"
+                          : "bg-light text-dark"
                       }`}
                       style={{ maxWidth: "70%" }}
                     >

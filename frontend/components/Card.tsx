@@ -47,7 +47,7 @@ function GenericCard({ data }: GenericCardProps) {
       >
         <button
           className="rounded-5 p-1"
-          onClick={() => dispatch(toggleFavoriteAsync(data.id))}
+          onClick={() => data?.id && dispatch(toggleFavoriteAsync(data?.id))}
         >
           {favorites.some((item) => item.id === data.id) ? "❤️" : "🤍"}
         </button>

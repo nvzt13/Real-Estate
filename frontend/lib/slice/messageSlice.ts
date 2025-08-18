@@ -44,7 +44,7 @@ export const fetchMessagesByUserId = createAsyncThunk(
 
 // send messages
 export const sendMessage = createAsyncThunk("message/sendMessage", async (message: MessageType) => {
-
+console.log("message")
   const token = localStorage.getItem("accessToken");
    try{
      const response = await fetch('http://localhost:8000/api/messages/', {
@@ -62,7 +62,7 @@ export const sendMessage = createAsyncThunk("message/sendMessage", async (messag
       return data;
    }
    catch(error) {
-     console.log(error)
+     console.log("hate", error)
    }
 })
 // message Slice

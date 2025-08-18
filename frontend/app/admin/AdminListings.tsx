@@ -11,8 +11,8 @@ const AdminPanel = () => {
   const listings = useAppSelector((state) => state.listings.listings);
   const dispatch = useAppDispatch();
 
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [editedListing, setEditedListing] = useState<Listing>({});
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editedListing, setEditedListing] = useState<Listing | null>();
 
   const startEditing = (listing: any) => {
     setEditingId(listing.id);
@@ -21,12 +21,17 @@ const AdminPanel = () => {
 
   const cancelEditing = () => {
     setEditingId(null);
-    setEditedListing({});
+    setEditedListing({
+      title: "",
+      type: "Kiralık",
+      price: 0,
+      location: ""
+    });
   };
 
   const handleSave = () => {
-    console.log("Güncellenen veri:", editedListing);
-    dispatch(updateListing(editedListing) || {}); // Güncelleme işlemi için dispatch çağrısı
+    if(editedListing === null || editedListing=== undefined) return
+    dispatch(updateListing(editedListing)); // Güncelleme işlemi için dispatch çağrısı
     // dispatch(updateListing(editedListing)) gibi bir işlem yapılabilir
     setEditingId(null);
   };
@@ -62,7 +67,7 @@ const AdminPanel = () => {
                 {editingId === listing.id ? (
                   <Form.Control
                     type="text"
-                    value={editedListing.title}
+                    value={editedListing?.title || ""}
                     onChange={(e) => handleChange("title", e.target.value)}
                   />
                 ) : (

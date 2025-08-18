@@ -37,11 +37,15 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
 
 
 class Message(models.Model):
-    sender = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='sent_messages')
+    sender = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, related_name='sent_messages'
+    )
+    receiver = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE, related_name='received_messages'
+    )
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-    is_admin = models.BooleanField(default=False)  # True ise mesaj admin'den gelmiştir
+    is_admin = models.BooleanField(default=False)  
 
     def __str__(self):
-        return f"{'Admin' if self.is_admin else self.sender.email}: {self.content[:20]}"
-
+        return f"{self.sender.email} -> {self.receiver.email}: {self.content[:20]}"

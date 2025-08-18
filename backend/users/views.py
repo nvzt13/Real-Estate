@@ -9,12 +9,11 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-
+from django.db.models import Q
 import logging
 
 logger = logging.getLogger(__name__)
-
-
+      
 class UserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
@@ -57,16 +56,25 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
     
     @action(detail=True, methods=['get'])
-    def messages(self, request, pk=None
-    ):
+    def messages(self, request, pk=None):
         user = self.get_object()
-        messages = Message.objects.filter(sender=user) | Message.objects.filter(is_admin=True)
+        admin_user = CustomUser.objects.filter(is_staff=True).first()  # admini al
+    
+        if not admin_user:
+            return Response({"error": "Admin bulunamadı."}, status=404)
+    
+        messages = Message.objects.filter(
+            (Q(sender=user) & Q(receiver=admin_user)) |
+            (Q(sender=admin_user) & Q(receiver=user))
+        ).order_by("created_at")  # tarih sırasına göre
+    
         serializer = MessageSerializer(messages, many=True)
         return Response(serializer.data)
     
 
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
+
 
 class MessageViewSet(viewsets.ModelViewSet):
     queryset = Message.objects.all()
@@ -75,8 +83,16 @@ class MessageViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        return Message.objects.filter(sender=user) | Message.objects.filter(is_admin=True)
-    
+        admin_user = CustomUser.objects.filter(is_staff=True).first()  # admini al
+
+        if not admin_user:
+            return Message.objects.none()
+
+        return Message.objects.filter(
+            (Q(sender=user) & Q(receiver=admin_user)) |
+            (Q(sender=admin_user) & Q(receiver=user))
+        ).order_by("created_at")
+
     def perform_create(self, serializer):
         is_admin = self.request.user.is_staff
         serializer.save(sender=self.request.user, is_admin=is_admin)

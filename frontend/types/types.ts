@@ -29,22 +29,23 @@ export interface LandSpecs {
 // types.ts
 export type Listing = {
   id?: number;
-  category: 'araba' | 'ev' | 'arsa';
+  category?: 'araba' | 'ev' | 'arsa';
   type: "Satılık" | "Kiralık",
   title: string;
-  description: string;
+  description?: string;
   price: number | null; // Nullable for listings without a price
   location: string;
-  specs: CarSpecs | HouseSpecs | LandSpecs;
-  images: string[];
-  coordinates: number[] | null; // Nullable for listings without coordinates
+  specs?: CarSpecs | HouseSpecs | LandSpecs;
+  images?: string[];
+  coordinates?: number[] | null; // Nullable for listings without coordinates
 };
 
 export interface Message {
-  id: number;
-  sender: string;
-  is_admin: boolean;
-  created_at: string;
+  id?: number;
+  sender?: number;
+  is_admin?: boolean;
+  created_at?: string;
+  receiver: number;
   content: string;
 }
 export interface User {
@@ -52,7 +53,7 @@ export interface User {
   name: string;
   lastName: string;
   is_staff?: boolean;
-  favorites: Listing[];
+  favorites?: Listing[];
   email: string;
   password: string;
 }
