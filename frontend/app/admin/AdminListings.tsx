@@ -5,7 +5,7 @@ import { Table, Button, Form, Badge } from "react-bootstrap";
 import { FaTrash, FaEdit, FaSave, FaTimes } from "react-icons/fa";
 import { useAppSelector, useAppDispatch } from "@/lib/hooks";
 import { updateListing } from "@/lib/slice/listingSlice";
-import {deleleteListing} from "@/lib/slice/listingSlice"
+import { deleleteListing } from "@/lib/slice/listingSlice";
 import { Listing } from "@/types/types";
 const AdminPanel = () => {
   const listings = useAppSelector((state) => state.listings.listings);
@@ -14,8 +14,8 @@ const AdminPanel = () => {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editedListing, setEditedListing] = useState<Listing | null>();
 
-  const startEditing = (listing: any) => {
-    setEditingId(listing.id);
+  const startEditing = (listing: Listing) => {
+    if(listing?.id) setEditingId(listing.id);
     setEditedListing({ ...listing });
   };
 
@@ -25,20 +25,21 @@ const AdminPanel = () => {
       title: "",
       type: "Kiralık",
       price: 0,
-      location: ""
+      location: "",
     });
   };
 
   const handleSave = () => {
-    if(editedListing === null || editedListing=== undefined) return
+    if (editedListing === null || editedListing === undefined) return;
     dispatch(updateListing(editedListing)); // Güncelleme işlemi için dispatch çağrısı
     // dispatch(updateListing(editedListing)) gibi bir işlem yapılabilir
     setEditingId(null);
   };
 
-  const handleChange = (field: string, value: string) => {
-    setEditedListing((prev: any) => ({ ...prev, [field]: value }));
-  };
+  const handleChange = <K extends keyof Listing>(field: K, value: Listing[K]) => {
+  setEditedListing(prev => prev ? { ...prev, [field]: value } : prev);
+};
+
 
   return (
     <div className="p-4">
@@ -67,7 +68,7 @@ const AdminPanel = () => {
                 {editingId === listing.id ? (
                   <Form.Control
                     type="text"
-                    value={editedListing?.title || ""}
+                    value={editedListing?.title && editedListing?.title}
                     onChange={(e) => handleChange("title", e.target.value)}
                   />
                 ) : (
@@ -78,7 +79,7 @@ const AdminPanel = () => {
                 {editingId === listing.id ? (
                   <Form.Control
                     type="text"
-                    value={editedListing.location}
+                    value={editedListing?.location && editedListing.location}
                     onChange={(e) => handleChange("location", e.target.value)}
                   />
                 ) : (
@@ -88,8 +89,8 @@ const AdminPanel = () => {
               <td>
                 {editingId === listing.id ? (
                   <Form.Select
-                    value={editedListing.type}
-                    onChange={(e) => handleChange("type", e.target.value)}
+                    value={editedListing?.type && editedListing.type}
+                    onChange={(e) =>  handleChange("type", e.target.value as "Satılık" | "Kiralık")}
                   >
                     <option>Satılık</option>
                     <option>Kiralık</option>
@@ -107,8 +108,8 @@ const AdminPanel = () => {
                 {editingId === listing.id ? (
                   <Form.Control
                     type="number"
-                    value={editedListing.price}
-                    onChange={(e) => handleChange("price", e.target.value)}
+                    value={editedListing?.price ?? ""}
+                    onChange={(e) => handleChange("price", Number(e.target.value))}
                   />
                 ) : (
                   `${listing.price} ₺`
@@ -146,7 +147,9 @@ const AdminPanel = () => {
                     <Button
                       variant="outline-danger"
                       size="sm"
-                      onClick={() => dispatch(deleleteListing(listing.id))}
+                      onClick={() =>
+                        listing?.id && dispatch(deleleteListing(listing.id))
+                      }
                     >
                       <FaTrash />
                     </Button>

@@ -19,13 +19,12 @@ const YeniIlanEkle = () => {
     state.listings.loading)
   )
   const [formData, setFormData] = useState<Listing>({
-    id: "",
     category: "ev",
     type: "Satılık",
     title: "",
     description: "",
     price: null,
-    specs: {} as any,
+    specs: {} as CarSpecs | HouseSpecs | LandSpecs,
     location: "",
     images: [],
     coordinates: null,
@@ -37,13 +36,14 @@ const YeniIlanEkle = () => {
     setKategori(e.target.value);
   };
 
-  const handleChange = (e: { target: { name: any; value: any } }) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+type ListingKeys = keyof Listing;
+const handleChange = <K extends ListingKeys>(field: K, value: Listing[K]) => {
+  setFormData(prev => ({
+    ...prev,
+    [field]: value,
+  }));
+};
+
 
   const collectSpecs = (): CarSpecs | HouseSpecs | LandSpecs => {
     if (kategori === "Ev") {
@@ -122,7 +122,7 @@ const YeniIlanEkle = () => {
     e.preventDefault();
 
      if(!formData.title || !formData.description || !formData.price || !formData.location || !formData.images ) {
-      toast.error("Lütfen tüm zorunlu alanları doldurun!", "error");
+      toast.error("Lütfen tüm zorunlu alanları doldurun!");
      return;
       }
     const newSpecs = collectSpecs();
@@ -159,7 +159,7 @@ const YeniIlanEkle = () => {
         <Col md={6}>
           <Form.Group className="mb-3">
             <Form.Label>İlan Tipi</Form.Label>
-            <Form.Select name="type" onChange={handleChange}>
+            <Form.Select name="type" onChange={(e) => handleChange("type", e.target.value as "Satılık" | "Kiralık")}>
               <option>Satılık</option>
               <option>Kiralık</option>
             </Form.Select>
@@ -177,7 +177,7 @@ const YeniIlanEkle = () => {
               <Form.Control
                 placeholder="Örn: Merkezi Konumda 3+1 Daire"
                 name="title"
-                onChange={handleChange}
+                onChange={(e) =>  handleChange("title", e.target.value)}
               />
             </Form.Group>
             <Form.Group className="mb-3">
@@ -186,7 +186,7 @@ const YeniIlanEkle = () => {
                 as="textarea"
                 rows={3}
                 name="description"
-                onChange={handleChange}
+                onChange={(e) => handleChange("description", e.target.value)}
               />
             </Form.Group>
           </Form>
@@ -204,7 +204,7 @@ const YeniIlanEkle = () => {
                 <Form.Control
                   type="number"
                   name="price"
-                  onChange={handleChange}
+                  onChange={(e) => handleChange("price", Number(e.target.value))}
                 />
               </Form.Group>
             </Col>
@@ -396,7 +396,7 @@ const YeniIlanEkle = () => {
                 <Form.Control
                   placeholder="İstanbul/pendik"
                   name="location"
-                  onChange={handleChange}
+                  onChange={(e) => handleChange("location", e.target.value) }
                 />
               </Form.Group>
             </Col>

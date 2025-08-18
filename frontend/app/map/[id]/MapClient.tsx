@@ -16,7 +16,7 @@ import { Listing } from "@/types/types";
 import { useAppSelector } from "@/lib/hooks";
 
 // Leaflet marker icon fix
-delete (L.Icon.Default.prototype as any)._getIconUrl;
+delete (L.Icon.Default.prototype as unknown as { _getIconUrl?: unknown })._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl:
     "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
@@ -45,7 +45,7 @@ const MapView = ({ selectedListing }: { selectedListing: Listing[] }) => {
           <Popup>
             <strong>{item.title}</strong>
             <br />
-            {item.price.toLocaleString("tr-TR")}₺
+            {item?.price && item.price.toLocaleString("tr-TR")}₺
           </Popup>
         </Marker>
       ))}
@@ -123,7 +123,7 @@ const MapClient = ({ id }: { id: string }) => {
                 </div>
                 <Card.Text className="mb-1">{item.title}</Card.Text>
                 <Card.Text className="fw-bold">
-                  {item.price.toLocaleString("tr-TR")}₺
+                  { item?.price && item.price.toLocaleString("tr-TR")}₺
                 </Card.Text>
               </Card>
             </Col>

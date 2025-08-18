@@ -57,7 +57,7 @@ export const addListing = createAsyncThunk(
 // ilanı sil
 export const deleleteListing = createAsyncThunk(
   "lisitngs/delete",
-  async (id: string) => {
+  async (id: number) => {
     const res = await fetch(`http://localhost:8000/api/listings/${id}/`, {
       method: "DELETE",
       headers: {

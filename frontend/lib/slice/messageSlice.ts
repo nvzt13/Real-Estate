@@ -1,4 +1,4 @@
-import { Message, MessageType } from "@/types/types";
+import { Message } from "@/types/types";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 interface MessageState {
@@ -43,7 +43,7 @@ export const fetchMessagesByUserId = createAsyncThunk(
 );
 
 // send messages
-export const sendMessage = createAsyncThunk("message/sendMessage", async (message: MessageType) => {
+export const sendMessage = createAsyncThunk("message/sendMessage", async (message: Message) => {
 console.log("message")
   const token = localStorage.getItem("accessToken");
    try{

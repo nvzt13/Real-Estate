@@ -45,7 +45,7 @@ function RegisterForm() {
     }
 
     const { confirmPassword: _, ...userData } = formData; // confirmPassword dahil edilmesin
-    console.log("Kayıt bilgileri:", userData);
+    console.log("Kayıt bilgileri:", userData, _);
     setShowError(false);
     dispatch(createUserAsync(formData));
   };

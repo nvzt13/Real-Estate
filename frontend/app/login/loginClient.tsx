@@ -11,7 +11,7 @@ function LoginForm() {
 
   const dispatch = useAppDispatch();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
   e.preventDefault();
 
   if (!email || !password) {

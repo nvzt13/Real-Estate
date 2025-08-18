@@ -48,7 +48,7 @@ export default function ChatApp() {
 
   let newMessage: Message;
 
-  if (isAdmin && selectedUser) {
+  if (isAdmin && selectedUser && selectedUser.id) {
     // Admin -> User
     newMessage = {
       receiver: selectedUser.id, // seçilen kullanıcı
@@ -99,7 +99,7 @@ export default function ChatApp() {
                     >
                       <div>{msg.content}</div>
                       <small className="text-muted">
-                        {new Date(msg.created_at).toLocaleTimeString([], {
+                        {msg?.created_at && msg?.created_at !== undefined && new Date(msg.created_at).toLocaleTimeString([], {
                           hour: "2-digit",
                           minute: "2-digit",
                         })}
@@ -182,7 +182,7 @@ export default function ChatApp() {
                     >
                       <div>{msg.content}</div>
                       <small className="text-muted">
-                        {new Date(msg.created_at).toLocaleTimeString([], {
+                        {msg?.created_at && msg?.created_at !== undefined && new Date(msg.created_at).toLocaleTimeString([], {
                           hour: "2-digit",
                           minute: "2-digit",
                         })}
